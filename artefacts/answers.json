@@ -1,0 +1,76 @@
+{
+  "generated_on": "2026-09-07",
+  "offline": true,
+  "count": 2,
+  "results": [
+    {
+      "id": "q1",
+      "difficulty": "easy",
+      "question": "What is photosynthesis and what are its main stages?",
+      "answer": "The available offline references provide an overview of “What is photosynthesis and what are its main stages?” [1]. This answer was generated in offline mode, so it demonstrates the complete research pipeline without making network or external LLM requests [1].",
+      "citations": [
+        {
+          "index": 1,
+          "title": "Offline Encyclopedia: What is photosynthesis and what are its main stages?",
+          "url": "https://example.test/offline/wikipedia/4443115401116322655",
+          "origin": "wikipedia"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Offline Encyclopedia: What is photosynthesis and what are its main stages?",
+          "url": "https://example.test/offline/wikipedia/4443115401116322655",
+          "snippet": "This offline wikipedia reference contains background information relevant to the question: What is photosynthesis and what are its main stages?",
+          "origin": "wikipedia"
+        }
+      ],
+      "failures": [],
+      "timings_ms": {
+        "wikipedia": 21.0
+      },
+      "cache_hit": false,
+      "warnings": []
+    },
+    {
+      "id": "q2",
+      "difficulty": "medium",
+      "question": "How do transformer-based language models handle long context windows?",
+      "answer": "The available offline references provide an overview of “How do transformer-based language models handle long context windows?” [1] [2]. This answer was generated in offline mode, so it demonstrates the complete research pipeline without making network or external LLM requests [1].",
+      "citations": [
+        {
+          "index": 1,
+          "title": "Offline Research Paper: How do transformer-based language models handle long context windows?",
+          "url": "https://example.test/offline/arxiv/2082788619932578002",
+          "origin": "arxiv"
+        },
+        {
+          "index": 2,
+          "title": "Offline Technical Guide: How do transformer-based language models handle long context windows?",
+          "url": "https://example.test/offline/web/2082788619932578002",
+          "origin": "web"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Offline Research Paper: How do transformer-based language models handle long context windows?",
+          "url": "https://example.test/offline/arxiv/2082788619932578002",
+          "snippet": "This offline arxiv reference contains background information relevant to the question: How do transformer-based language models handle long context windows?",
+          "origin": "arxiv"
+        },
+        {
+          "title": "Offline Technical Guide: How do transformer-based language models handle long context windows?",
+          "url": "https://example.test/offline/web/2082788619932578002",
+          "snippet": "This offline web reference contains background information relevant to the question: How do transformer-based language models handle long context windows?",
+          "origin": "web"
+        }
+      ],
+      "failures": [],
+      "timings_ms": {
+        "arxiv": 13.2,
+        "web": 7.9
+      },
+      "cache_hit": false,
+      "warnings": []
+    }
+  ]
+}
