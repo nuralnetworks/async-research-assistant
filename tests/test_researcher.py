@@ -2,30 +2,22 @@
 
 from __future__ import annotations
 
-from dataclasses import dataclass, field
 from types import SimpleNamespace
 from typing import Any, Awaitable, Callable
 
 import pytest
 
 from ai.schemas import AnswerWithCitations, Citation, Source
-from researcher.core import researcher as researcher_module
+from researcher.concurrency import orchestrator
+from researcher.concurrency.orchestrator import FetchOutcome
 from researcher.core.researcher import ResearchError, Researcher
 from researcher.models import ResearchRequest, SourceFailure
 
 FetchBehavior = Callable[
     [str, tuple[str, ...], Any, Any],
-    Awaitable["FakeFetchOutcome"],
+    Awaitable[FetchOutcome],
 ]
 
-
-@dataclass(frozen=True)
-class FakeFetchOutcome:
-    """Offline equivalent of the orchestrator's FetchOutcome."""
-
-    sources: list[Source]
-    failures: list[SourceFailure] = field(default_factory=list)
-    timings_ms: dict[str, float] = field(default_factory=dict)
 
 
 class FakeHistoryRecorder:
@@ -33,10 +25,8 @@ class FakeHistoryRecorder:
 
     def __init__(self) -> None:
         self.entries: list[tuple[str, list[Source]]] = []
-
     def record(self, question: str, sources: list[Source]) -> None:
         self.entries.append((question, list(sources)))
-
 
 class FakeAIService:
     """Deterministic AI service that never calls an external provider."""
@@ -116,11 +106,7 @@ def _install_fetch_behavior(
     monkeypatch: pytest.MonkeyPatch,
     behavior: FetchBehavior,
 ) -> None:
-    monkeypatch.setattr(
-        "researcher.core.researcher.fetch_all",
-        behavior,
-        raising=False,
-    )
+    monkeypatch.setattr(orchestrator, "fetch_all", behavior)
 
 
 
@@ -133,13 +119,14 @@ async def test_happy_path_produces_answer_and_citation(
         sources: tuple[str, ...],
         settings: Any,
         svc: Any,
-    ) -> FakeFetchOutcome:
+    ) -> FetchOutcome:
         del settings, svc
         assert question == QUESTION
         assert sources == ("wikipedia", "arxiv", "web")
 
-        return FakeFetchOutcome(
+        return FetchOutcome(
             sources=[WIKIPEDIA_SOURCE, ARXIV_SOURCE, WEB_SOURCE],
+            failures=[],
             timings_ms={
                 "wikipedia": 4.0,
                 "arxiv": 5.0,
@@ -184,7 +171,6 @@ async def test_happy_path_produces_answer_and_citation(
         )
     ]
 
-
 @pytest.mark.asyncio
 async def test_one_failed_source_still_produces_answer_and_warning(
     monkeypatch: pytest.MonkeyPatch,
@@ -194,10 +180,10 @@ async def test_one_failed_source_still_produces_answer_and_warning(
         sources: tuple[str, ...],
         settings: Any,
         svc: Any,
-    ) -> FakeFetchOutcome:
+    ) -> FetchOutcome:
         del question, sources, settings, svc
 
-        return FakeFetchOutcome(
+        return FetchOutcome(
             sources=[WIKIPEDIA_SOURCE, WEB_SOURCE],
             failures=[
                 SourceFailure(
@@ -256,10 +242,10 @@ async def test_all_sources_failing_raises_research_error(
         sources: tuple[str, ...],
         settings: Any,
         svc: Any,
-    ) -> FakeFetchOutcome:
+    ) -> FetchOutcome:
         del question, sources, settings, svc
 
-        return FakeFetchOutcome(
+        return FetchOutcome(
             sources=[],
             failures=[
                 SourceFailure(source="wikipedia", error="offline"),
@@ -297,13 +283,12 @@ async def test_blank_question_is_rejected(
         sources: tuple[str, ...],
         settings: Any,
         svc: Any,
-    ) -> FakeFetchOutcome:
+    ) -> FetchOutcome:
         nonlocal fetch_was_called
         del question, sources, settings, svc
 
         fetch_was_called = True
-        return FakeFetchOutcome(sources=[WIKIPEDIA_SOURCE])
-
+        return FetchOutcome(sources=[WIKIPEDIA_SOURCE], failures=[], timings_ms={})
     _install_fetch_behavior(monkeypatch, fake_fetch_all)
 
     history = FakeHistoryRecorder()
