@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import hashlib
 import json
 import logging
 import sqlite3
@@ -130,7 +131,10 @@ class FileJsonCacheStore(CacheStore):
 
     def _path_for(self, source: str, query: str) -> Path:
         nquery = canonicalize_query(query)
-        digest = abs(hash((source, nquery)))
+        # hash() is salted per-process in Python, so it changes on every
+        # CLI run and would make this cache miss every time. sha256 is
+        # stable across runs, which is the whole point of a disk cache.
+        digest = hashlib.sha256(f"{source}:{nquery}".encode()).hexdigest()[:16]
         return self._dir / f"{source}__{digest}.json"
 
     def get(self, source: str, query: str) -> list[Source] | None:
