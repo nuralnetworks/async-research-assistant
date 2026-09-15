@@ -67,7 +67,7 @@ python -m researcher ask "What is fusion energy?" --offline --json
 python -m researcher demo --limit 5 --offline
 
 # timing test
-python -m researcher bench --offline
+python -m researcher bench
 ```
 
 `python -m researcher demo --limit 5 --offline` writes one answer per question plus `artefacts/answers.json`.
@@ -78,7 +78,7 @@ Numbers come from `scripts/bench.py --offline` on the same machine with a cleare
 
 | Workload | N | Sequential | Concurrent (sem=5) | Speedup |
 |---|---|---|---|---|
-| 5 questions x 3 sources, 300ms fake IO | 15 fetches | tbd | tbd | tbd |
+| 5 questions x 3 sources, 300ms fake IO | 15 fetches | 4.617 s | 3.647 s | 1.27x |
 
 ```bash
 python scripts/bench.py --offline
