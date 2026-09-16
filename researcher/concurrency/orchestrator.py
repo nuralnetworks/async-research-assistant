@@ -72,7 +72,15 @@ async def fetch_all(
 
     sem = asyncio.Semaphore(settings.max_parallel)
 
-    async with httpx.AsyncClient(timeout=settings.per_source_timeout_seconds) as client:
+    headers = {
+        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AsyncResearchAssistant/1.0"
+    }
+
+    async with httpx.AsyncClient(
+    	timeout=settings.per_source_timeout_seconds,
+    	follow_redirects=True,
+    	headers={"User-Agent": "AsyncResearchAssistant/1.0 (AI-ENG-110 course project)"},
+    ) as client:
         results = await asyncio.gather(
             *(_fetch_one(src, question, settings, svc, client, sem) for src in resolved)
         )

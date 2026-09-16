@@ -1,7 +1,7 @@
 {
-  "generated_on": "2026-09-07",
+  "generated_on": "2026-09-16",
   "offline": true,
-  "count": 2,
+  "count": 5,
   "results": [
     {
       "id": "q1",
@@ -12,21 +12,21 @@
         {
           "index": 1,
           "title": "Offline Encyclopedia: What is photosynthesis and what are its main stages?",
-          "url": "https://example.test/offline/wikipedia/4443115401116322655",
+          "url": "https://example.test/offline/wikipedia/7756128353984304625",
           "origin": "wikipedia"
         }
       ],
       "sources": [
         {
           "title": "Offline Encyclopedia: What is photosynthesis and what are its main stages?",
-          "url": "https://example.test/offline/wikipedia/4443115401116322655",
+          "url": "https://example.test/offline/wikipedia/7756128353984304625",
           "snippet": "This offline wikipedia reference contains background information relevant to the question: What is photosynthesis and what are its main stages?",
           "origin": "wikipedia"
         }
       ],
       "failures": [],
       "timings_ms": {
-        "wikipedia": 21.0
+        "wikipedia": 16.0
       },
       "cache_hit": false,
       "warnings": []
@@ -40,34 +40,157 @@
         {
           "index": 1,
           "title": "Offline Research Paper: How do transformer-based language models handle long context windows?",
-          "url": "https://example.test/offline/arxiv/2082788619932578002",
+          "url": "https://example.test/offline/arxiv/7838548357949139420",
           "origin": "arxiv"
         },
         {
           "index": 2,
           "title": "Offline Technical Guide: How do transformer-based language models handle long context windows?",
-          "url": "https://example.test/offline/web/2082788619932578002",
+          "url": "https://example.test/offline/web/7838548357949139420",
           "origin": "web"
         }
       ],
       "sources": [
         {
           "title": "Offline Research Paper: How do transformer-based language models handle long context windows?",
-          "url": "https://example.test/offline/arxiv/2082788619932578002",
+          "url": "https://example.test/offline/arxiv/7838548357949139420",
           "snippet": "This offline arxiv reference contains background information relevant to the question: How do transformer-based language models handle long context windows?",
           "origin": "arxiv"
         },
         {
           "title": "Offline Technical Guide: How do transformer-based language models handle long context windows?",
-          "url": "https://example.test/offline/web/2082788619932578002",
+          "url": "https://example.test/offline/web/7838548357949139420",
           "snippet": "This offline web reference contains background information relevant to the question: How do transformer-based language models handle long context windows?",
           "origin": "web"
         }
       ],
       "failures": [],
       "timings_ms": {
-        "arxiv": 13.2,
-        "web": 7.9
+        "arxiv": 0.0,
+        "web": 16.0
+      },
+      "cache_hit": false,
+      "warnings": []
+    },
+    {
+      "id": "q3",
+      "difficulty": "medium",
+      "question": "What were the main causes of the 2008 financial crisis?",
+      "answer": "The available offline references provide an overview of “What were the main causes of the 2008 financial crisis?” [1] [2]. This answer was generated in offline mode, so it demonstrates the complete research pipeline without making network or external LLM requests [1].",
+      "citations": [
+        {
+          "index": 1,
+          "title": "Offline Encyclopedia: What were the main causes of the 2008 financial crisis?",
+          "url": "https://example.test/offline/wikipedia/4813727196041259156",
+          "origin": "wikipedia"
+        },
+        {
+          "index": 2,
+          "title": "Offline Technical Guide: What were the main causes of the 2008 financial crisis?",
+          "url": "https://example.test/offline/web/4813727196041259156",
+          "origin": "web"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Offline Encyclopedia: What were the main causes of the 2008 financial crisis?",
+          "url": "https://example.test/offline/wikipedia/4813727196041259156",
+          "snippet": "This offline wikipedia reference contains background information relevant to the question: What were the main causes of the 2008 financial crisis?",
+          "origin": "wikipedia"
+        },
+        {
+          "title": "Offline Technical Guide: What were the main causes of the 2008 financial crisis?",
+          "url": "https://example.test/offline/web/4813727196041259156",
+          "snippet": "This offline web reference contains background information relevant to the question: What were the main causes of the 2008 financial crisis?",
+          "origin": "web"
+        }
+      ],
+      "failures": [],
+      "timings_ms": {
+        "wikipedia": 0.0,
+        "web": 0.0
+      },
+      "cache_hit": false,
+      "warnings": []
+    },
+    {
+      "id": "q4",
+      "difficulty": "hard",
+      "question": "What is the current state of fusion energy research?",
+      "answer": "The available offline references provide an overview of “What is the current state of fusion energy research?” [1] [2]. This answer was generated in offline mode, so it demonstrates the complete research pipeline without making network or external LLM requests [1].",
+      "citations": [
+        {
+          "index": 1,
+          "title": "Offline Research Paper: What is the current state of fusion energy research?",
+          "url": "https://example.test/offline/arxiv/9004086009017803752",
+          "origin": "arxiv"
+        },
+        {
+          "index": 2,
+          "title": "Offline Technical Guide: What is the current state of fusion energy research?",
+          "url": "https://example.test/offline/web/9004086009017803752",
+          "origin": "web"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Offline Research Paper: What is the current state of fusion energy research?",
+          "url": "https://example.test/offline/arxiv/9004086009017803752",
+          "snippet": "This offline arxiv reference contains background information relevant to the question: What is the current state of fusion energy research?",
+          "origin": "arxiv"
+        },
+        {
+          "title": "Offline Technical Guide: What is the current state of fusion energy research?",
+          "url": "https://example.test/offline/web/9004086009017803752",
+          "snippet": "This offline web reference contains background information relevant to the question: What is the current state of fusion energy research?",
+          "origin": "web"
+        }
+      ],
+      "failures": [],
+      "timings_ms": {
+        "arxiv": 0.0,
+        "web": 0.0
+      },
+      "cache_hit": false,
+      "warnings": []
+    },
+    {
+      "id": "q5",
+      "difficulty": "hard",
+      "question": "How does CRISPR-Cas9 gene editing work at a molecular level?",
+      "answer": "The available offline references provide an overview of “How does CRISPR-Cas9 gene editing work at a molecular level?” [1] [2]. This answer was generated in offline mode, so it demonstrates the complete research pipeline without making network or external LLM requests [1].",
+      "citations": [
+        {
+          "index": 1,
+          "title": "Offline Encyclopedia: How does CRISPR-Cas9 gene editing work at a molecular level?",
+          "url": "https://example.test/offline/wikipedia/8692960341792196028",
+          "origin": "wikipedia"
+        },
+        {
+          "index": 2,
+          "title": "Offline Research Paper: How does CRISPR-Cas9 gene editing work at a molecular level?",
+          "url": "https://example.test/offline/arxiv/8692960341792196028",
+          "origin": "arxiv"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Offline Encyclopedia: How does CRISPR-Cas9 gene editing work at a molecular level?",
+          "url": "https://example.test/offline/wikipedia/8692960341792196028",
+          "snippet": "This offline wikipedia reference contains background information relevant to the question: How does CRISPR-Cas9 gene editing work at a molecular level?",
+          "origin": "wikipedia"
+        },
+        {
+          "title": "Offline Research Paper: How does CRISPR-Cas9 gene editing work at a molecular level?",
+          "url": "https://example.test/offline/arxiv/8692960341792196028",
+          "snippet": "This offline arxiv reference contains background information relevant to the question: How does CRISPR-Cas9 gene editing work at a molecular level?",
+          "origin": "arxiv"
+        }
+      ],
+      "failures": [],
+      "timings_ms": {
+        "wikipedia": 0.0,
+        "arxiv": 0.0
       },
       "cache_hit": false,
       "warnings": []

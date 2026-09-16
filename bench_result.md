@@ -12,18 +12,18 @@
 
 | Mode | Duration (s) | Sources fetched | Relative speed |
 |---|---:|---:|---:|
-| Sequential | 4.654 | 15 | 1.00x |
-| Parallel (`fetch_all`) | 2.282 | 15 | 2.04x |
+| Sequential | 4.645 | 15 | 1.00x |
+| Parallel (`fetch_all`) | 2.671 | 15 | 1.74x |
 
 ## Device and Runtime
 
 | Metric | Value |
 |---|---|
-| Operating system | Windows-11-10.0.26200-SP0 |
+| Operating system | Windows-10-10.0.26200-SP0 |
 | Machine | AMD64 |
-| Processor | Intel64 Family 6 Model 183 Stepping 1, GenuineIntel |
-| Logical CPU count | 24 |
-| Python version | 3.14.3 |
+| Processor | Intel64 Family 6 Model 154 Stepping 4, GenuineIntel |
+| Logical CPU count | 12 |
+| Python version | 3.11.9 |
 | Python implementation | CPython |
 
 ## Interpretation
