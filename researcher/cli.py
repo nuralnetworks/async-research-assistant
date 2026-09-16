@@ -6,12 +6,13 @@ import argparse
 import asyncio
 import json
 
+import httpx
 from pydantic import ValidationError
 
 from ai.schemas import AnswerWithCitations, Citation, Source
 from researcher.config import get_settings
 from researcher.core.researcher import Researcher
-from researcher.models import ResearchRequest
+from researcher.models import ResearchRequest, ResearchResult
 from researcher.services.ai_service import ResilientAIService
 from researcher.services.rate_limit import TokenBucket
 from researcher.storage.cache_store import CacheStore, SqliteCacheStore
@@ -26,7 +27,7 @@ class OfflineService:
         self,
         source: str,
         query: str,
-        client=None,
+        client: httpx.AsyncClient | None = None,
     ) -> list[Source]:
         """Return canned sources without using the network."""
 
@@ -180,15 +181,20 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run demo without network access",
     )
 
-    subparsers.add_parser(
+    bench_parser = subparsers.add_parser(
         "bench",
         help="Run sequential vs parallel benchmark",
+    )
+    bench_parser.add_argument(
+        "--offline",
+        action="store_true",
+        help="Run the simulated benchmark without network (also the default)",
     )
 
     return parser
 
 
-def render_result(result) -> None:
+def render_result(result: ResearchResult) -> None:
     """Print a research result in human-readable format."""
 
     print(f"Q: {result.question}")
@@ -212,7 +218,7 @@ def render_result(result) -> None:
         print(f"Warnings: {'; '.join(result.warnings)}")
 
 
-def render_json(result) -> None:
+def render_json(result: ResearchResult) -> None:
     """Print a research result as JSON."""
 
     answer = AnswerWithCitations(
@@ -265,7 +271,7 @@ class CacheAwareService:
         self,
         source: str,
         query: str,
-        client=None,
+        client: httpx.AsyncClient | None = None,
     ) -> list[Source]:
         return await self._service.fetch_one(
             source,
@@ -285,11 +291,11 @@ class CacheAwareService:
         )
 
 
-def main() -> None:
+def main(argv: list[str] | None = None) -> None:
     """Parse command-line arguments and run the selected command."""
 
     parser = build_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.command == "ask":
         sources = tuple(

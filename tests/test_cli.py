@@ -8,6 +8,56 @@ from researcher.cli import main
 from researcher.models import ResearchRequest
 
 
+@pytest.mark.parametrize("question", ["", "  ", "a", "x" * 2001])
+def test_question_boundaries(question, capsys):
+    with pytest.raises(SystemExit) as exc:
+        main(["ask", question, "--offline"])
+    assert exc.value.code == 2
+    assert "question must be between 3 and 2000 characters" in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("sources", ["", ",", "wiki,youtube"])
+def test_invalid_sources(sources, capsys):
+    with pytest.raises(SystemExit) as exc:
+        main(["ask", "What is AI?", "--sources", sources])
+    assert exc.value.code == 2
+    error = capsys.readouterr().err
+    assert "--sources must be" in error
+    assert "Traceback" not in error
+
+
+@pytest.mark.parametrize("limit", ["0", "11", "abc"])
+def test_invalid_source_limit(limit, capsys):
+    with pytest.raises(SystemExit) as exc:
+        main(["ask", "What is AI?", "--max-sources", limit])
+    assert exc.value.code == 2
+    assert "Traceback" not in capsys.readouterr().err
+
+
+@pytest.mark.parametrize("flags", [[], ["--offline"]])
+def test_benchmark_dispatch(flags, monkeypatch):
+    calls = []
+
+    async def fake_benchmark():
+        calls.append(True)
+
+    monkeypatch.setattr("researcher.cli.run_benchmark", fake_benchmark)
+    main(["bench", *flags])
+    assert calls == [True]
+
+
+def test_demo_dispatch(monkeypatch):
+    calls = []
+
+    async def fake_demo(limit, offline):
+        calls.append((limit, offline))
+        return 0
+
+    monkeypatch.setattr("researcher.cli.run_demo", fake_demo)
+    main(["demo", "--offline", "--limit", "2"])
+    assert calls == [(2, True)]
+
+
 def test_wiki_alias_maps_to_wikipedia():
     request = ResearchRequest(
         question="What is AI?",
