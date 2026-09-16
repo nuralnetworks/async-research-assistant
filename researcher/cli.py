@@ -5,13 +5,17 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import sqlite3
+import sys
 
 import httpx
 from pydantic import ValidationError
 
+from ai.providers.base import ProviderError
 from ai.schemas import AnswerWithCitations, Citation, Source
 from researcher.config import get_settings
-from researcher.core.researcher import Researcher
+from researcher.core.researcher import ResearchError, Researcher
+from researcher.logging_setup import setup_logging
 from researcher.models import ResearchRequest, ResearchResult
 from researcher.services.ai_service import ResilientAIService
 from researcher.services.rate_limit import TokenBucket
@@ -291,7 +295,7 @@ class CacheAwareService:
         )
 
 
-def main(argv: list[str] | None = None) -> None:
+def _main(argv: list[str] | None = None) -> None:
     """Parse command-line arguments and run the selected command."""
 
     parser = build_parser()
@@ -355,11 +359,11 @@ def main(argv: list[str] | None = None) -> None:
         else:
             settings = get_settings()
 
-            cache = SqliteCacheStore(settings)
-
+            cache: SqliteCacheStore | None = None
             service_cache: CacheStore
 
             if request.use_cache:
+                cache = SqliteCacheStore(settings)
                 service_cache = cache
             else:
                 service_cache = NoCacheStore()
@@ -402,7 +406,8 @@ def main(argv: list[str] | None = None) -> None:
                     render_result(result)
 
             finally:
-                cache.close()
+                if cache is not None:
+                    cache.close()
 
     elif args.command == "demo":
         try:
@@ -436,19 +441,12 @@ def main(argv: list[str] | None = None) -> None:
         ) as error:
             parser.error(str(error))
 
-def test_no_cache_store_never_reads_or_writes():
-    from researcher.cli import NoCacheStore
-
-    store = NoCacheStore()
-
-    assert store.get("wikipedia", "What is AI?") is None
-
-    store.set(
-        "wikipedia",
-        "What is AI?",
-        [],
-    )
-
-    store.clear()
-
-    assert store.get("wikipedia", "What is AI?") is None
+def main(argv: list[str] | None = None) -> None:
+    """Keep operational failures concise while preserving argparse exit codes."""
+    setup_logging()
+    try:
+        _main(argv)
+    except (ResearchError, ProviderError, httpx.HTTPError, OSError,
+            sqlite3.Error, ValueError) as error:
+        sys.stderr.write(f"researcher: error: {error}\n")
+        raise SystemExit(1) from None

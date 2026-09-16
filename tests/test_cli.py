@@ -6,6 +6,83 @@ import pytest
 
 from researcher.cli import main
 from researcher.models import ResearchRequest
+from researcher.models import ResearchResult
+
+
+def test_online_no_cache_never_opens_database(monkeypatch, capsys):
+    def forbidden_store(*args):
+        pytest.fail("--no-cache must not open persistent storage")
+
+    class FakeService:
+        def __init__(self, settings, cache, limiter):
+            self.cache = cache
+
+        async def fetch_one(self, source, query, client=None, use_cache=True):
+            assert use_cache is False
+            self.cache.set(source, query, [])
+            assert self.cache.get(source, query) is None
+            return []
+
+    class FakeResearcher:
+        def __init__(self, settings, service):
+            self.service = service
+
+        async def ask(self, request):
+            assert request.use_cache is False
+            assert request.sources == ("wikipedia", "arxiv")
+            await self.service.fetch_one("wikipedia", request.question)
+            return ResearchResult(question=request.question, answer="Example")
+
+    monkeypatch.setattr("researcher.cli.SqliteCacheStore", forbidden_store)
+    monkeypatch.setattr("researcher.cli.ResilientAIService", FakeService)
+    monkeypatch.setattr("researcher.cli.Researcher", FakeResearcher)
+    main(["ask", "What is AI?", "--sources", "wiki,arxiv", "--no-cache"])
+    assert "A: Example" in capsys.readouterr().out
+
+
+@pytest.mark.parametrize("fails", [False, True])
+def test_cache_closes_after_research(monkeypatch, capsys, fails):
+    from researcher.core.researcher import ResearchError
+
+    closed = []
+
+    class FakeStore:
+        def __init__(self, settings):
+            pass
+
+        def close(self):
+            closed.append(True)
+
+    class FakeResearcher:
+        def __init__(self, settings, service):
+            pass
+
+        async def ask(self, request):
+            if fails:
+                raise ResearchError("all sources unavailable")
+            return ResearchResult(question=request.question, answer="Example")
+
+    monkeypatch.setattr("researcher.cli.SqliteCacheStore", FakeStore)
+    monkeypatch.setattr("researcher.cli.Researcher", FakeResearcher)
+    if fails:
+        with pytest.raises(SystemExit) as exc:
+            main(["ask", "What is AI?"])
+        assert exc.value.code == 1
+        error = capsys.readouterr().err
+        assert "all sources unavailable" in error
+        assert "Traceback" not in error
+    else:
+        main(["ask", "What is AI?"])
+    assert closed == [True]
+
+
+def test_no_cache_store_never_reads_or_writes():
+    from researcher.cli import NoCacheStore
+
+    store = NoCacheStore()
+    store.set("wikipedia", "What is AI?", [])
+    store.clear()
+    assert store.get("wikipedia", "What is AI?") is None
 
 
 @pytest.mark.parametrize("question", ["", "  ", "a", "x" * 2001])
