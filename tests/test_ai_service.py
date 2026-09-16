@@ -131,7 +131,7 @@ async def test_retry_then_success(monkeypatch: Any) -> None:
     svc, _ = _svc()
     calls = 0
 
-    async def _flaky(query: str, *, max_results: int = 2, client: Any = None) -> list[Source]:
+    async def _flaky(query: str, *, max_results: int = 2, client: Any = None, **kwargs: Any) -> list[Source]:
         nonlocal calls
         calls += 1
         if calls < 3:
@@ -149,7 +149,7 @@ async def test_gives_up_after_attempts(monkeypatch: Any) -> None:
     svc, _ = _svc(retry_attempts=2)
     calls = 0
 
-    async def _down(query: str, *, max_results: int = 2, client: Any = None) -> list[Source]:
+    async def _down(query: str, *, max_results: int = 2, client: Any = None, **kwargs: Any) -> list[Source]:
         nonlocal calls
         calls += 1
         raise ProviderError("still down")
