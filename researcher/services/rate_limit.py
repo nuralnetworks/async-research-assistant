@@ -55,7 +55,7 @@ class TokenBucket(RateLimiter):
                 self._refill(now)
                 if self._tokens >= 1.0:
                     self._tokens -= 1.0
-                    return None
+                    return
                 missing = 1.0 - self._tokens
                 wait = missing / self._rate
             await asyncio.sleep(wait)

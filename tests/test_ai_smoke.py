@@ -10,12 +10,13 @@ from __future__ import annotations
 import pytest
 
 from ai import (
-    Source, AnswerWithCitations,
-    fetch_web, synthesize,
+    AnswerWithCitations,
+    Source,
+    fetch_web,
+    synthesize,
 )
-from ai.synthesizer import _extract_cited_indices
 from ai.sources import _parse_arxiv_atom
-
+from ai.synthesizer import _extract_cited_indices
 
 # --- Source model ---------------------------------------------------------
 

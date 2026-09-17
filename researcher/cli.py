@@ -6,13 +6,12 @@ import argparse
 import asyncio
 import json
 
-from researcher.logging_setup import setup_logging
-
 from pydantic import ValidationError
 
 from ai.schemas import AnswerWithCitations, Citation, Source
 from researcher.config import get_settings
 from researcher.core.researcher import Researcher
+from researcher.logging_setup import setup_logging
 from researcher.models import ResearchRequest
 from researcher.services.ai_service import ResilientAIService
 from researcher.services.rate_limit import TokenBucket

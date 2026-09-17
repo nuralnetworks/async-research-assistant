@@ -70,7 +70,7 @@ def _svc(**over: Any) -> tuple[ResilientAIService, FakeCache]:
 
 @pytest.mark.asyncio
 async def test_blank_query_returns_empty_without_network(monkeypatch: Any) -> None:
-    svc, cache = _svc()
+    svc, _cache = _svc()
     called = False
 
     async def _fail(*a: Any, **k: Any) -> list[Source]:

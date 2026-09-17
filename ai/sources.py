@@ -31,7 +31,6 @@ from typing import Any
 from ai.providers.base import ProviderError
 from ai.schemas import Source
 
-
 # ---------------------------------------------------------------------------
 # httpx is imported lazily so the package stays importable without it.
 # ---------------------------------------------------------------------------
@@ -345,6 +344,7 @@ class DuckDuckGoProvider(WebSearchProvider):
     ) -> list[Source]:
         # `client` is unused — this provider doesn't speak HTTP directly.
         import asyncio
+
         from duckduckgo_search import DDGS  # type: ignore
 
         def _run() -> list[Source]:

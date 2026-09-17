@@ -29,7 +29,6 @@ from researcher.config import Settings, get_settings
 from researcher.models import SourceFailure
 from researcher.storage.cache_store import SqliteCacheStore
 
-
 QUESTION_FILE = PROJECT_ROOT / "data" / "research_questions.json"
 RESULT_FILE = PROJECT_ROOT / "bench_result.md"
 SOURCE_NAMES = ("wikipedia", "arxiv", "web")
