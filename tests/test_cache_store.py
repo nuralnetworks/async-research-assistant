@@ -5,7 +5,7 @@ import pytest
 
 from ai.schemas import Source
 from researcher.config import Settings
-from researcher.storage.cache_store import SqliteCacheStore, FileJsonCacheStore
+from researcher.storage.cache_store import FileJsonCacheStore, SqliteCacheStore
 
 
 def _source(title="T", url="https://example.com", origin="wikipedia"):
@@ -82,14 +82,15 @@ def test_file_cache_survives_process_restart(tmp_path):
     import sys
 
     cache_dir = tmp_path / "filecache"
+    root = str(Path(__file__).resolve().parents[1])
     script = (
-        "import sys; sys.path.insert(0, %r)\n"
+        f"import sys; sys.path.insert(0, {root!r})\n"
         "from pathlib import Path\n"
         "from researcher.storage.cache_store import FileJsonCacheStore\n"
         "store = FileJsonCacheStore.__new__(FileJsonCacheStore)\n"
-        "store._dir = Path(%r)\n"
+        f"store._dir = Path({str(cache_dir)!r})\n"
         "print(store._path_for('web', 'What is X?').name)\n"
-    ) % (str(Path(__file__).resolve().parents[1]), str(cache_dir))
+    )
 
     def run_with_seed(seed: str) -> str:
         env = dict(os.environ, PYTHONHASHSEED=seed)

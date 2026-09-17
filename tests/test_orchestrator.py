@@ -3,10 +3,10 @@ from pathlib import Path
 
 import pytest
 
-from ai.schemas import Source
 from ai.providers.base import ProviderError
-from researcher.config import Settings
+from ai.schemas import Source
 from researcher.concurrency.orchestrator import fetch_all
+from researcher.config import Settings
 
 
 def _settings(max_parallel=5, per_source_timeout_seconds=1.0):

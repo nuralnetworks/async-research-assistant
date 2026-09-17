@@ -18,6 +18,8 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
+from dotenv import load_dotenv
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 if str(PROJECT_ROOT) not in sys.path:
@@ -28,7 +30,6 @@ from researcher.concurrency.orchestrator import FetchOutcome, fetch_all
 from researcher.config import Settings, get_settings
 from researcher.models import SourceFailure
 from researcher.storage.cache_store import SqliteCacheStore
-
 
 QUESTION_FILE = PROJECT_ROOT / "data" / "research_questions.json"
 RESULT_FILE = PROJECT_ROOT / "bench_result.md"
@@ -89,7 +90,8 @@ def load_questions() -> list[str]:
     raw_questions = payload.get("questions")
 
     if not isinstance(raw_questions, list):
-        raise ValueError("research_questions.json must contain a questions list")
+        # ValueError on purpose: main() turns it into a clean CLI error.
+        raise ValueError("research_questions.json must contain a questions list")  # noqa: TRY004
 
     questions = [
         str(item.get("text", "")).strip()
@@ -117,7 +119,7 @@ async def fetch_sequential(
 
         try:
             sources = await service.fetch_one(source_name, question)
-        except Exception as error:
+        except Exception as error:  # noqa: BLE001 - one bad source must not stop the benchmark
             failures.append(
                 SourceFailure(
                     source=source_name,
@@ -345,6 +347,8 @@ async def run_benchmark() -> None:
 
 def main() -> None:
     """Run the benchmark."""
+    # The ai package reads plain env vars, so export .env first.
+    load_dotenv()
     parse_args()
 
     try:
