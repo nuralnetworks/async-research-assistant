@@ -6,6 +6,8 @@ import argparse
 import asyncio
 import json
 
+from researcher.logging_setup import setup_logging
+
 from pydantic import ValidationError
 
 from ai.schemas import AnswerWithCitations, Citation, Source
@@ -287,6 +289,8 @@ class CacheAwareService:
 
 def main() -> None:
     """Parse command-line arguments and run the selected command."""
+
+    setup_logging(get_settings().log_level)
 
     parser = build_parser()
     args = parser.parse_args()
