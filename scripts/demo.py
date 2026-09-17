@@ -8,6 +8,8 @@ from datetime import date
 from pathlib import Path
 from typing import Any
 
+from dotenv import load_dotenv
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 if str(PROJECT_ROOT) not in sys.path:
@@ -18,7 +20,7 @@ from researcher.config import Settings, get_settings
 from researcher.core.researcher import ResearchError, Researcher
 from researcher.models import ResearchRequest, ResearchResult
 from researcher.services.ai_service import ResilientAIService
-from researcher.services.rate_limit import NoopLimiter, TokenBucket
+from researcher.services.rate_limit import TokenBucket
 from researcher.storage.cache_store import SqliteCacheStore
 
 
@@ -338,6 +340,8 @@ async def run_demo(limit: int, offline: bool) -> int:
 
 
 def main() -> None:
+    # The ai package reads plain env vars, so export .env first.
+    load_dotenv()
     args = parse_args()
 
     try:

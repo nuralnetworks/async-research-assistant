@@ -17,7 +17,7 @@ Only `services/ai_service.py` calls `ai/`. Only the service and core read and wr
 
 `researcher/models.py` has ResearchRequest, SourceFailure and ResearchResult.
 
-`researcher/services/ai_service.py` wraps every `ai.*` call with retries, timeouts and logging.
+`researcher/services/ai_service.py` wraps every `ai.*` call with retries, timeouts and logging. It also shapes the query per source: keywords for Wikipedia (shortened until something matches) and arXiv, the full question for web search.
 
 `researcher/services/rate_limit.py` is a small token bucket used before external calls.
 

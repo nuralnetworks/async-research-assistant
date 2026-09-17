@@ -18,6 +18,8 @@ from dataclasses import replace
 from pathlib import Path
 from typing import Any
 
+from dotenv import load_dotenv
+
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
 
 if str(PROJECT_ROOT) not in sys.path:
@@ -345,6 +347,8 @@ async def run_benchmark() -> None:
 
 def main() -> None:
     """Run the benchmark."""
+    # The ai package reads plain env vars, so export .env first.
+    load_dotenv()
     parse_args()
 
     try:

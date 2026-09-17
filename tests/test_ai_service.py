@@ -11,7 +11,7 @@ import pytest
 from ai.providers.base import LLMProvider, ProviderError
 from ai.schemas import Source
 from researcher.config import Settings, canonicalize_query
-from researcher.services.ai_service import ResilientAIService
+from researcher.services.ai_service import ResilientAIService, search_keywords
 from researcher.services.rate_limit import NoopLimiter
 
 
@@ -66,6 +66,49 @@ def _svc(**over: Any) -> tuple[ResilientAIService, FakeCache]:
     cache = FakeCache()
     svc = ResilientAIService(_settings(**over), cache, NoopLimiter())
     return svc, cache
+
+
+def test_search_keywords_strips_question_words() -> None:
+    assert search_keywords("What is photosynthesis?") == "photosynthesis"
+    assert search_keywords("HOW DOES crispr WORK?!") == "crispr work"
+    assert search_keywords("photosynthesis") == "photosynthesis"
+    assert search_keywords("  Tell me   about fusion  ") == "about fusion"
+
+
+def test_search_keywords_keeps_something_short() -> None:
+    assert search_keywords("What is it?") == "it"
+
+
+@pytest.mark.asyncio
+async def test_wiki_shortens_until_hit(monkeypatch: Any) -> None:
+    svc, _ = _svc()
+    calls: list[str] = []
+
+    async def _fake(query: str, *, max_results: int = 2, client: Any = None) -> list[Source]:
+        calls.append(query)
+        if len(calls) < 2:
+            return []
+        return [_source("Hit")]
+
+    monkeypatch.setattr("researcher.services.ai_service._fetch_wikipedia", _fake)
+    out = await svc.fetch_one("wikipedia", "What is photosynthesis and what are its stages?")
+    assert [s.title for s in out] == ["Hit"]
+    assert calls[0] == "photosynthesis and what are its stages"
+    assert len(calls) == 2
+
+
+@pytest.mark.asyncio
+async def test_arxiv_uses_keywords(monkeypatch: Any) -> None:
+    svc, _ = _svc()
+    seen: list[str] = []
+
+    async def _fake(query: str, *, max_results: int = 2, client: Any = None) -> list[Source]:
+        seen.append(query)
+        return [_source("Paper", origin="arxiv")]
+
+    monkeypatch.setattr("researcher.services.ai_service._fetch_arxiv", _fake)
+    await svc.fetch_one("arxiv", "What is photosynthesis?")
+    assert seen == ["photosynthesis"]
 
 
 @pytest.mark.asyncio
@@ -161,6 +204,22 @@ async def test_gives_up_after_attempts(monkeypatch: Any) -> None:
 
 
 @pytest.mark.asyncio
+async def test_missing_key_fails_at_once(monkeypatch: Any) -> None:
+    svc, _ = _svc()
+    calls = 0
+
+    async def _nokey(query: str, *, max_results: int = 2, client: Any = None) -> list[Source]:
+        nonlocal calls
+        calls += 1
+        raise ProviderError("TAVILY_API_KEY is not set.")
+
+    monkeypatch.setattr("researcher.services.ai_service._fetch_web", _nokey)
+    with pytest.raises(ProviderError):
+        await svc.fetch_one("web", "fusion")
+    assert calls == 1
+
+
+@pytest.mark.asyncio
 async def test_timeout_counts_as_retry(monkeypatch: Any) -> None:
     svc, _ = _svc(retry_attempts=2, per_source_timeout_seconds=0.05)
 
@@ -219,6 +278,21 @@ def test_synthesize_retries_on_provider_error(sample_sources: list[Source]) -> N
     out = svc.synthesize("Q?", sample_sources, llm=_Flaky())
     assert "[1]" in out.answer
     assert calls == 2
+
+
+def test_synthesize_missing_key_fails_at_once(sample_sources: list[Source]) -> None:
+    svc, _ = _svc()
+    calls = 0
+
+    class _NoKey(LLMProvider):
+        def complete(self, prompt: str, *, json_schema=None, max_tokens=1024) -> str:  # type: ignore[no-untyped-def]
+            nonlocal calls
+            calls += 1
+            raise ProviderError("GOOGLE_API_KEY is not set.")
+
+    with pytest.raises(ProviderError):
+        svc.synthesize("Q?", sample_sources, llm=_NoKey())
+    assert calls == 1
 
 
 def test_synthesize_rejects_empty_answer(sample_sources: list[Source]) -> None:

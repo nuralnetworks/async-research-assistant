@@ -5,12 +5,15 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import sys
 
+from dotenv import load_dotenv
 from pydantic import ValidationError
 
+from ai.providers.base import ProviderError
 from ai.schemas import AnswerWithCitations, Citation, Source
 from researcher.config import get_settings
-from researcher.core.researcher import Researcher
+from researcher.core.researcher import Researcher, ResearchError
 from researcher.models import ResearchRequest
 from researcher.services.ai_service import ResilientAIService
 from researcher.services.rate_limit import TokenBucket
@@ -287,6 +290,8 @@ class CacheAwareService:
 
 def main() -> None:
     """Parse command-line arguments and run the selected command."""
+    # The ai package reads plain env vars, so export .env first.
+    load_dotenv()
 
     parser = build_parser()
     args = parser.parse_args()
@@ -395,6 +400,9 @@ def main() -> None:
                 else:
                     render_result(result)
 
+            except (ProviderError, ResearchError) as error:
+                print(f"error: {error}", file=sys.stderr)
+                raise SystemExit(1) from error
             finally:
                 cache.close()
 
