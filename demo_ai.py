@@ -22,17 +22,19 @@ import asyncio
 import json
 import sys
 from pathlib import Path
+from typing import ClassVar
 
 sys.path.insert(0, str(Path(__file__).parent))
 
 from ai import (
-    Source, AnswerWithCitations,
-    fetch_wikipedia, fetch_arxiv, fetch_web,
+    AnswerWithCitations,
+    Source,
+    fetch_arxiv,
+    fetch_web,
+    fetch_wikipedia,
     synthesize,
 )
 from ai.providers.base import LLMProvider, ProviderError
-from ai.sources import WebSearchProvider
-
 
 # --- offline fakes --------------------------------------------------------
 
@@ -59,7 +61,7 @@ class _OfflineLLM(LLMProvider):
 class _OfflineSources:
     """Returns canned Source lists for the demo, keyed by query keywords."""
 
-    DB: dict[str, list[Source]] = {
+    DB: ClassVar[dict[str, list[Source]]] = {
         "photosynthesis": [
             Source(
                 title="Photosynthesis",
@@ -173,7 +175,7 @@ def render(answer: AnswerWithCitations) -> str:
 
 
 async def run_one(question: str, offline: bool, llm: LLMProvider | None) -> None:
-    print(f"=" * 72)
+    print("=" * 72)
     print(f"Researching: {question}\n")
 
     if offline:

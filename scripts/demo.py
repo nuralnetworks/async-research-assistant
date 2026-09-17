@@ -4,7 +4,7 @@ import argparse
 import asyncio
 import json
 import sys
-from datetime import date
+from datetime import datetime, timezone
 from pathlib import Path
 from typing import Any
 
@@ -15,12 +15,11 @@ if str(PROJECT_ROOT) not in sys.path:
 
 from ai.schemas import AnswerWithCitations, Citation, Source
 from researcher.config import Settings, get_settings
-from researcher.core.researcher import ResearchError, Researcher
+from researcher.core.researcher import Researcher, ResearchError
 from researcher.models import ResearchRequest, ResearchResult
 from researcher.services.ai_service import ResilientAIService
-from researcher.services.rate_limit import NoopLimiter, TokenBucket
+from researcher.services.rate_limit import TokenBucket
 from researcher.storage.cache_store import SqliteCacheStore
-
 
 QUESTION_FILE = PROJECT_ROOT / "data" / "research_questions.json"
 ARTEFACTS_DIR = PROJECT_ROOT / "artefacts"
@@ -197,7 +196,7 @@ def result_to_json(
 
 
 def render_digest(results: list[dict[str, Any]], offline: bool) -> str:
-    today = date.today().isoformat()
+    today = datetime.now(timezone.utc).date().isoformat()
     mode = "offline" if offline else "live"
 
     lines = [
@@ -262,7 +261,7 @@ def save_artefacts(
     ARTEFACTS_DIR.mkdir(parents=True, exist_ok=True)
 
     payload = {
-        "generated_on": date.today().isoformat(),
+        "generated_on": datetime.now(timezone.utc).date().isoformat(),
         "offline": offline,
         "count": len(results),
         "results": results,
@@ -273,7 +272,7 @@ def save_artefacts(
         encoding="utf-8",
     )
 
-    digest_file = ARTEFACTS_DIR / f"digest-{date.today().isoformat()}.md"
+    digest_file = ARTEFACTS_DIR / f"digest-{datetime.now(timezone.utc).date().isoformat()}.md"
     digest_file.write_text(
         render_digest(results, offline),
         encoding="utf-8",

@@ -1,0 +1,24 @@
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint.per-file-ignores]
+# sys.path manipulation before imports is intentional in standalone scripts
+"scripts/*.py" = ["E402"]
+
+
+[tool.ruff.lint]
+# Broad except-blocks are intentional here: isolate one bad source/title
+# from failing the whole fetch, and tests assert "some exception raised"
+# generically rather than a specific type.
+ignore = ["BLE001", "S112", "TRY004", "B017"]
+
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+# Provided course module — do not modify; don't let mypy fail our CI on it
+module = "ai.*"
+ignore_errors = true
+follow_imports = "skip"

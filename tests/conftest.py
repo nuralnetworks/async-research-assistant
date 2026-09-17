@@ -7,8 +7,8 @@ from typing import Any
 import pytest
 
 from ai.providers.base import LLMProvider
-from ai.sources import WebSearchProvider
 from ai.schemas import Source
+from ai.sources import WebSearchProvider
 
 
 class FakeLLM(LLMProvider):
