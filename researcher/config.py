@@ -39,7 +39,7 @@ if _HAS_PYDANTIC_SETTINGS:
 
 else:
 
-    class _Env:
+    class _Env:  # type: ignore[no-redef]  # fallback when pydantic-settings is missing
         def __init__(self) -> None:
             import os
             self.LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini")

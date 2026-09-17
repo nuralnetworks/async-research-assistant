@@ -11,7 +11,7 @@ from typing import Any, Protocol
 import httpx
 from tenacity import (
     retry,
-    retry_if_exception_type,
+    retry_if_exception,
     stop_after_attempt,
     wait_exponential,
 )
@@ -28,6 +28,89 @@ from researcher.services.rate_limit import RateLimiter
 logger = logging.getLogger(__name__)
 
 _RETRYABLE = (ProviderError, httpx.HTTPError, TimeoutError, OSError)
+
+# Cache namespace. Bump when retrieval changes, so entries written by an
+# older query logic are never served as if they were fresh.
+_CACHE_VERSION = "v2"
+
+# Leading words that add no meaning for keyword search. Stripped once.
+_QUESTION_STARTS = (
+    "what is",
+    "what are",
+    "what was",
+    "what were",
+    "what does",
+    "what do",
+    "what did",
+    "who is",
+    "who are",
+    "who was",
+    "when is",
+    "when was",
+    "where is",
+    "where are",
+    "why is",
+    "why are",
+    "why do",
+    "why does",
+    "how is",
+    "how are",
+    "how do",
+    "how does",
+    "how did",
+    "how can",
+    "how could",
+    "explain",
+    "describe",
+    "define",
+    "tell me",
+)
+
+
+def search_keywords(question: str) -> str:
+    """Turn a question into keywords for Wikipedia and arXiv.
+
+    Those two want short keyword queries; a full sentence like
+    "What is photosynthesis?" comes back empty or off-topic.
+    Web search keeps the original question, it likes sentences.
+    """
+    text = canonicalize_query(question).rstrip("?!.")
+    for start in _QUESTION_STARTS:
+        if text.startswith(start + " "):
+            text = text[len(start) + 1 :]
+            break
+    text = " ".join(text.split())
+    if len(text) < 3:
+        return text or canonicalize_query(question)
+    return text
+
+
+def _wiki_tries(question: str) -> list[str]:
+    """Wikipedia likes short queries, so shorten until one can hit."""
+    words = search_keywords(question).split()
+    tries = [" ".join(words)]
+    if len(words) > 5:
+        tries.append(" ".join(words[:5]))
+    if len(words) > 3:
+        tries.append(" ".join(words[:3]))
+    seen: list[str] = []
+    for query in tries:
+        if query and query not in seen:
+            seen.append(query)
+    return seen
+
+
+def _is_config_error(error: Exception) -> bool:
+    """True when retrying is pointless: a key or package is missing."""
+    msg = str(error).lower()
+    return "is not set" in msg or "is required" in msg
+
+
+def _is_retryable(error: BaseException) -> bool:
+    """Transient failures retry, config errors fail at once."""
+    return isinstance(error, _RETRYABLE) and not (
+        isinstance(error, Exception) and _is_config_error(error)
+    )
 
 
 class CacheLike(Protocol):
@@ -74,7 +157,7 @@ class ResilientAIService:
             return []
 
         if use_cache:
-            hit = self._cache.get(name, query)
+            hit = self._cache.get(name, f"{_CACHE_VERSION}:{query}")
             if hit is not None:
                 logger.info("fetch cache_hit source=%s n=%d", name, len(hit))
                 return hit
@@ -93,7 +176,7 @@ class ResilientAIService:
                 ms = (time.monotonic() - started) * 1000
                 logger.info("fetch ok source=%s n=%d ms=%.0f", name, len(out), ms)
                 logger.debug("fetch payload source=%s items=%d", name, len(out))
-                self._cache.set(name, query, out)
+                self._cache.set(name, f"{_CACHE_VERSION}:{query}", out)
                 return out
             except (ValueError, TypeError) as e:
                 # programmer error or bad input, retrying will not help
@@ -102,6 +185,10 @@ class ResilientAIService:
             except _RETRYABLE as e:
                 last_error = e
                 ms = (time.monotonic() - started) * 1000
+                if _is_config_error(e):
+                    # a missing key never fixes itself, fail at once
+                    logger.error("fetch config_error source=%s error=%s", name, e)
+                    raise
                 logger.warning(
                     "fetch retry source=%s attempt=%d/%d ms=%.0f error=%s",
                     name,
@@ -122,14 +209,19 @@ class ResilientAIService:
     async def _call_source(
         self, name: str, query: str, client: Any
     ) -> list[Source]:
-        key = canonicalize_query(query)
-        shown = key[:80]
-        logger.debug("fetch start source=%s q=%s", name, shown)
         limit = self._settings.max_sources_per_query
         if name == "wikipedia":
-            return await _fetch_wikipedia(query, max_results=limit, client=client)
+            for attempt in _wiki_tries(query):
+                logger.debug("wiki try q=%s", attempt[:80])
+                out = await _fetch_wikipedia(attempt, max_results=limit, client=client)
+                if out:
+                    return out
+            return []
         if name == "arxiv":
-            return await _fetch_arxiv(query, max_results=limit, client=client)
+            shaped = search_keywords(query)
+            logger.debug("arxiv q=%s", shaped[:80])
+            return await _fetch_arxiv(shaped, max_results=limit, client=client)
+        logger.debug("web q=%s", canonicalize_query(query)[:80])
         return await _fetch_web(query, max_results=limit, client=client)
 
     def synthesize(
@@ -152,7 +244,7 @@ class ResilientAIService:
                 min=self._settings.retry_min_wait,
                 max=self._settings.retry_max_wait,
             ),
-            retry=retry_if_exception_type(_RETRYABLE),
+            retry=retry_if_exception(_is_retryable),
             reraise=True,
         )
         def _run() -> AnswerWithCitations:

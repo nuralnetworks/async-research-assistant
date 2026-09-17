@@ -2,15 +2,16 @@
 
 from __future__ import annotations
 
+from collections.abc import Awaitable, Callable
 from types import SimpleNamespace
-from typing import Any, Awaitable, Callable
+from typing import Any
 
 import pytest
 
 from ai.schemas import AnswerWithCitations, Citation, Source
 from researcher.concurrency import orchestrator
 from researcher.concurrency.orchestrator import FetchOutcome
-from researcher.core.researcher import ResearchError, Researcher
+from researcher.core.researcher import Researcher, ResearchError
 from researcher.models import ResearchRequest, SourceFailure
 
 FetchBehavior = Callable[
