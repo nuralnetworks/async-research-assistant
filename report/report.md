@@ -4,7 +4,7 @@
 
 AI-ENG-110 / AI Academy / Topic 4
 
-Prepared 17 September 2026. Team: Nural, Emil, Mahammadali and Bailar.
+Updated 18 September 2026. Team: Nural, Emil, Mahammadali and Bailar.
 This report completes Bailar's sections and records integration evidence.
 The other members' authored report sections and six slides have not been supplied.
 This is a contribution report, not a declaration that the final team release is ready.
@@ -50,16 +50,18 @@ upgrades. The Docker job checks help, a non-root UID and all three offline
 commands with --network none. Repository branch protection must require these
 jobs for failures to block merging; editing YAML alone cannot enforce that.
 
-Docker is unavailable on this development machine. Image build/run and the
-required second-machine validation remain unverified until CI or a teammate
-with Docker executes them. No passing Docker result is claimed here.
+GitHub's Linux runner verified the image build, non-root UID and all three
+offline commands in fresh containers with networking disabled. Evidence:
+Actions run 35284135541, job 105412575476, head f090268. All steps passed.
+This is remote CI proof, not a claim of a local Windows Docker run.
 
 ## Measured verification
 
 Python 3.12.10 on Windows 11 build 26200, AMD64, 12 logical CPUs.
-All 86 offline tests passed. researcher coverage: 93.04%. CLI coverage: 94%.
-The CLI and AI smoke subset passed 43 tests. Scoped Ruff checks passed.
-Scoped mypy with --follow-imports=silent passed for researcher/cli.py.
+All 92 offline tests passed. researcher coverage: 93.33%. CLI coverage: 94%.
+The CLI and AI smoke subset passed 43 tests. Project Ruff checks passed.
+Full mypy researcher/ passed across 15 source files. Remote CI also passed
+lint, typecheck, test and Docker for the verified head f090268.
 
 The normal suite encountered Windows access errors creating restricted pytest
 temporary folders. The verification launcher changed only os.mkdir's mode to
@@ -77,23 +79,20 @@ The unchanged demo also completed all five offline questions in scratch output.
 
 ## Integration handoff
 
-Global mypy reports three pre-existing errors: researcher/config.py:42 (_Env
-redefinition), researcher/logging_setup.py:16 (optional string), and
-ai/providers/openai.py:143 (optional dictionary key). Global Ruff reports 16
-issues in scripts/bench.py, scripts/demo.py, demo_ai.py and tests/test_ai_smoke.py.
-These files belong to other owners or are frozen and remain unchanged.
+Nural's main update e03e8cf fixed the dependency selection, cleaned tracked
+databases/bytecode and configured the lint/type checks. Bailar integrated it
+without claiming those changes as his own. pyreqwest-impersonate==0.5.3 provides
+the binary wheel, avoiding the missing C linker that broke the old build.
+Full pinned requirements now install on Windows and in the CI container.
 
-Full requirements installation on this Windows machine stopped while building
-pyreqwest-impersonate, required by duckduckgo-search==6.1.0, because the build
-needs Rust. Offline checks used the pinned core/testing packages. No dependency
-versions changed. Live providers and full installation remain unverified here.
-
-researcher.db is already tracked on main, contrary to the final-release rule.
-The team must coordinate its removal. Other owners must resolve their lint/type
-errors and provide their report sections and slides before final assembly.
+Other members will prepare their authored report sections, contribution
+statements and slides after technical verification. The assembled team report
+therefore remains pending. Live provider calls were not repeated in this run.
+The team's model/README update belongs to Emil and is not claimed by Bailar.
 The reviewer assigned to Bailar is Mahammadali. The author merges after approval.
 Keep each PR below 300 changed lines; submit these commits in separate reviews
 where needed. Squashing changes the commit-share arithmetic.
+The v1.0-final tag and Moodle upload remain deferred by the team's instruction.
 
 ## AI disclosure and ownership
 
@@ -102,10 +101,12 @@ Dockerfile, .dockerignore, .github/workflows/ci.yml and the Docker/timings
 sections of README.md, and with these report/slides materials. It ran offline
 checks and drafted the explanation. Bailar must review and understand the
 changes before submission. No work is attributed to another member and no
-other member's implementation files were edited.
+other member's implementation changes were independently authored here;
+updates from main retain their existing authorship.
 
 ## Evidence sources
 
 The supplied team ownership rules; docs/architecture.md; researcher/cli.py;
 tests/test_cli.py; Dockerfile; .github/workflows/ci.yml; scripts/bench.py;
-scripts/demo.py; and the local test, Ruff and mypy outputs from this session.
+scripts/demo.py; local test, Ruff and mypy results; GitHub Actions run
+35284135541; and the team integration commit e03e8cf.

@@ -6,7 +6,7 @@ Insert the other three members' six authored slides before Q&A during assembly.
 Those slides were not supplied for this revision.
 
 Source notes identify the relevant repository files, verification limits and AI
-assistance. Do not describe Docker or global CI as passing before verifying them.
+assistance. Docker and CI passed for the head f090268 in Actions run 35284135541.
 
 `build_slides.mjs` uses the Codex bundled `@oai/artifact-tool` runtime. Set
 RUNTIME_NODE_MODULES, SKILL_DIR (the Presentations skill), RUNTIME_PYTHON and

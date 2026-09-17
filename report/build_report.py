@@ -39,7 +39,7 @@ def build() -> None:
     def footer(canvas, doc):
         canvas.setFont("Helvetica", 9)
         canvas.setFillColor(colors.HexColor("#64748B"))
-        canvas.drawString(48, 30, "Bailar / Contribution report / 17 September 2026")
+        canvas.drawString(48, 30, "Bailar / Contribution report / 18 September 2026")
         canvas.drawRightString(A4[0] - 48, 30, str(doc.page))
 
     SimpleDocTemplate(
