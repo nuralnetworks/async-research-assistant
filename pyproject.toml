@@ -1,12 +1,16 @@
 [tool.ruff]
 line-length = 100
+# Provided code ships as-is by course contract: never linted, never edited.
+extend-exclude = [
+    "ai/",
+    "demo_ai.py",
+    "tests/test_ai_smoke.py",
+    "tests/conftest.py",
+]
 
 [tool.ruff.lint.per-file-ignores]
 # scripts bootstrap sys.path before imports by design
 "scripts/*.py" = ["E402"]
-# provided files ship as-is and must not be edited
-"tests/test_ai_smoke.py" = ["F401"]
-"demo_ai.py" = ["F401", "F541"]
 
 [tool.mypy]
 python_version = "3.12"

@@ -12,6 +12,9 @@ google-genai==0.3.0
 
 # Web search, DuckDuckGo needs no key
 duckduckgo-search==6.1.0
+# Pinned transitive dep: newer releases lack a manylinux wheel, which breaks
+# the Docker build on python-slim (no C toolchain). 0.5.3 ships one.
+pyreqwest-impersonate==0.5.3
 
 # Tests and checks, all run offline
 pytest==8.3.3

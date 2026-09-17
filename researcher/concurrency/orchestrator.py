@@ -50,7 +50,7 @@ async def _fetch_one(
             async with asyncio.timeout(settings.per_source_timeout_seconds):
                 result = await svc.fetch_one(source, question, client=client)
             return source, result, (time.monotonic() - started) * 1000
-        except Exception as e:
+        except Exception as e:  # noqa: BLE001 - any source error becomes a recorded failure
             return source, e, (time.monotonic() - started) * 1000
 
 

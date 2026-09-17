@@ -113,7 +113,7 @@ async def test_arxiv_uses_keywords(monkeypatch: Any) -> None:
 
 @pytest.mark.asyncio
 async def test_blank_query_returns_empty_without_network(monkeypatch: Any) -> None:
-    svc, cache = _svc()
+    svc, _ = _svc()
     called = False
 
     async def _fail(*a: Any, **k: Any) -> list[Source]:
@@ -228,7 +228,7 @@ async def test_timeout_counts_as_retry(monkeypatch: Any) -> None:
         return [_source()]
 
     monkeypatch.setattr("researcher.services.ai_service._fetch_wikipedia", _slow)
-    with pytest.raises(Exception):
+    with pytest.raises(TimeoutError):
         await svc.fetch_one("wikipedia", "slow query")
 
 
