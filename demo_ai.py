@@ -31,7 +31,6 @@ from ai import (
     synthesize,
 )
 from ai.providers.base import LLMProvider, ProviderError
-from ai.sources import WebSearchProvider
 
 
 # --- offline fakes --------------------------------------------------------
@@ -173,7 +172,7 @@ def render(answer: AnswerWithCitations) -> str:
 
 
 async def run_one(question: str, offline: bool, llm: LLMProvider | None) -> None:
-    print(f"=" * 72)
+    print("=" * 72)
     print(f"Researching: {question}\n")
 
     if offline:

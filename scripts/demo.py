@@ -18,7 +18,7 @@ from researcher.config import Settings, get_settings
 from researcher.core.researcher import ResearchError, Researcher
 from researcher.models import ResearchRequest, ResearchResult
 from researcher.services.ai_service import ResilientAIService
-from researcher.services.rate_limit import NoopLimiter, TokenBucket
+from researcher.services.rate_limit import TokenBucket
 from researcher.storage.cache_store import SqliteCacheStore
 
 

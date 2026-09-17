@@ -10,7 +10,7 @@ from __future__ import annotations
 import pytest
 
 from ai import (
-    Source, Citation, AnswerWithCitations,
+    Source, AnswerWithCitations,
     fetch_web, synthesize,
 )
 from ai.synthesizer import _extract_cited_indices

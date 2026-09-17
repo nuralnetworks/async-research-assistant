@@ -86,7 +86,9 @@ async def fetch_wikipedia(
                     "namespace": 0,
                     "format": "json",
                 },
+                headers={"User-Agent": "AsyncResearchAssistant/1.0 (AI-ENG-110 course project)"},
             )
+
             r.raise_for_status()
         except Exception as e:  # pragma: no cover - network path
             raise ProviderError(f"Wikipedia search failed: {e}") from e
@@ -101,8 +103,10 @@ async def fetch_wikipedia(
         for title in titles:
             try:
                 summ = await client.get(
-                    _WIKI_SUMMARY_URL.format(title=title.replace(" ", "_"))
-                )
+                    _WIKI_SUMMARY_URL.format(title=title.replace(" ", "_")),
+                    headers={"User-Agent": "AsyncResearchAssistant/1.0 (AI-ENG-110 course project)"},
+		)
+               
                 summ.raise_for_status()
             except Exception:
                 continue  # one bad title shouldn't kill the whole fetch
@@ -130,7 +134,7 @@ async def fetch_wikipedia(
 # arXiv
 # ---------------------------------------------------------------------------
 
-_ARXIV_URL = "http://export.arxiv.org/api/query"
+_ARXIV_URL = "https://export.arxiv.org/api/query"
 _ATOM_NS = "{http://www.w3.org/2005/Atom}"
 
 
@@ -164,7 +168,9 @@ async def fetch_arxiv(
                     "sortBy": "relevance",
                     "sortOrder": "descending",
                 },
+                follow_redirects=True,
             )
+
             r.raise_for_status()
         except Exception as e:  # pragma: no cover - network path
             raise ProviderError(f"arXiv query failed: {e}") from e

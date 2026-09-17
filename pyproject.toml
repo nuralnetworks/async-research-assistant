@@ -1,0 +1,16 @@
+[tool.ruff]
+line-length = 100
+
+[tool.ruff.lint.per-file-ignores]
+# sys.path manipulation before imports is intentional in standalone scripts
+"scripts/*.py" = ["E402"]
+
+[tool.mypy]
+python_version = "3.11"
+warn_unused_ignores = true
+
+[[tool.mypy.overrides]]
+# Provided course module — do not modify; don't let mypy fail our CI on it
+module = "ai.*"
+ignore_errors = true
+follow_imports = "skip"
