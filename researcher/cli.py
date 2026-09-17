@@ -9,6 +9,7 @@ import sqlite3
 import sys
 
 import httpx
+from dotenv import load_dotenv
 from pydantic import ValidationError
 
 from ai.providers.base import ProviderError
@@ -295,6 +296,8 @@ class CacheAwareService:
 
 def _main(argv: list[str] | None = None) -> None:
     """Parse command-line arguments and run the selected command."""
+    # The ai package reads plain env vars, so export .env first.
+    load_dotenv()
 
     parser = build_parser()
     args = parser.parse_args(argv)
