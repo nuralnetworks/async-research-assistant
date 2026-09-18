@@ -1,12 +1,81 @@
 """Tests for the command-line interface."""
 
+import asyncio
+import json
 import sys
 
 import pytest
 
-from researcher.cli import main
-from researcher.models import ResearchRequest
+from ai.schemas import Citation, Source
+from researcher.cli import OfflineService, main, render_result
 from researcher.models import ResearchResult
+
+
+@pytest.fixture(autouse=True)
+def fake_researcher(monkeypatch):
+    """CLI unit tests depend on the frozen contract, not the real core."""
+    requests = []
+
+    class FakeResearcher:
+        def __init__(self, settings, service):
+            pass
+
+        async def ask(self, request):
+            requests.append(request)
+            source = Source(
+                title="Photosynthesis",
+                url="https://en.wikipedia.org/wiki/Photosynthesis",
+                origin="wikipedia", snippet="Canned test reference",
+            )
+            return ResearchResult(
+                question=request.question, answer="Example answer [1]",
+                citations=[Citation(index=1, source=source)], sources=[source],
+                timings_ms={"wikipedia": 1.5},
+            )
+
+    monkeypatch.setattr("researcher.cli.Researcher", FakeResearcher)
+    return requests
+
+
+def test_json_output_matches_flattened_contract(capsys):
+    main(["ask", "What is AI?", "--offline", "--json"])
+    result = json.loads(capsys.readouterr().out)
+    assert set(result) == {"question", "answer", "citations", "timings_ms"}
+    assert result["timings_ms"] == {"wikipedia": 1.5}
+    assert result["citations"][0] == {
+        "index": 1, "title": "Photosynthesis", "origin": "wikipedia",
+        "url": "https://en.wikipedia.org/wiki/Photosynthesis",
+    }
+
+
+def test_warning_output_only_when_present(capsys):
+    result = ResearchResult(question="What is AI?", answer="Example [1]")
+    render_result(result)
+    assert "Warnings:" not in capsys.readouterr().out
+    result.warnings = ["arxiv unavailable", "using remaining sources"]
+    render_result(result)
+    assert capsys.readouterr().out.endswith(
+        "Warnings: arxiv unavailable; using remaining sources\n"
+    )
+
+
+@pytest.mark.parametrize("question", ["What is photosynthesis?", "What is AI?"])
+def test_offline_service_uses_canned_sources_only(question, monkeypatch):
+    def forbidden_network(*args, **kwargs):
+        pytest.fail("offline service attempted network access")
+
+    monkeypatch.setattr("httpx.AsyncClient.request", forbidden_network)
+    monkeypatch.setattr("httpx.Client.request", forbidden_network)
+    service = OfflineService()
+    sources = []
+    for name in ("wikipedia", "arxiv", "web"):
+        fetched = asyncio.run(service.fetch_one(name, question))
+        assert [source.origin for source in fetched] == [name]
+        sources.extend(fetched)
+    answer = service.synthesize(question, sources)
+    assert "fake LLM" in answer.answer
+    assert [citation.index for citation in answer.citations] == [1, 2, 3]
+    assert sources[1].url.startswith("https://example.test/")
 
 
 def test_online_no_cache_never_opens_database(monkeypatch, capsys):
@@ -135,13 +204,9 @@ def test_demo_dispatch(monkeypatch):
     assert calls == [(2, True)]
 
 
-def test_wiki_alias_maps_to_wikipedia():
-    request = ResearchRequest(
-        question="What is AI?",
-        sources=("wiki",),
-    )
-
-    assert request.sources == ("wikipedia",)
+def test_wiki_alias_maps_to_wikipedia(fake_researcher):
+    main(["ask", "What is AI?", "--sources", "wiki,arxiv", "--offline"])
+    assert fake_researcher[0].sources == ("wikipedia", "arxiv")
 
 
 def test_invalid_source_exits_with_code_2(monkeypatch, capsys):
