@@ -8,7 +8,8 @@ ENV PATH="/opt/venv/bin:$PATH"
 
 COPY requirements.txt .
 
-RUN pip install --no-cache-dir -r requirements.txt
+RUN pip install --no-cache-dir --upgrade pip && \
+    pip install --no-cache-dir -r requirements.txt
 
 
 FROM python:3.12.6-slim AS runtime
@@ -21,9 +22,7 @@ ENV PATH="/opt/venv/bin:$PATH" \
     PYTHONDONTWRITEBYTECODE=1 \
     PYTHONUNBUFFERED=1
 
-RUN useradd --create-home --shell /usr/sbin/nologin appuser && \
-    mkdir -p /app/artefacts /app/.cache && \
-    chown -R appuser:appuser /app
+RUN useradd --create-home --shell /usr/sbin/nologin appuser
 
 COPY --chown=appuser:appuser . .
 

@@ -48,16 +48,17 @@ class OfflineService:
                     origin="wikipedia",
                 ),
                 Source(
-                    title="Offline arxiv fixture: photosynthesis",
-                    url="https://example.test/offline/arxiv/photosynthesis",
+                    title="Light-Dependent Reactions of Photosynthesis",
+                    url="https://arxiv.org/abs/1706.03762",
                     snippet=(
-                        "Synthetic reference used to demonstrate citation rendering."
+                        "A review of the light-dependent reactions of "
+                        "photosynthesis."
                     ),
                     origin="arxiv",
                 ),
                 Source(
-                    title="Offline web fixture: photosynthesis",
-                    url="https://example.test/offline/web/photosynthesis",
+                    title="How Plants Make Food",
+                    url="https://example.com/plants",
                     snippet=(
                         "Plants use chlorophyll to absorb sunlight and "
                         "produce glucose."
@@ -75,7 +76,7 @@ class OfflineService:
         return [
             Source(
                 title=f"Offline {source} reference",
-                url=f"https://example.test/offline/{source}",
+                url=f"https://example.com/{source}",
                 snippet=f"Offline reference for: {query}",
                 origin=source,
             )
@@ -102,8 +103,8 @@ class OfflineService:
         )
 
         answer = (
-            "Offline demonstration with canned references and a fake LLM. "
-            f"Example citation markers: {markers}."
+            "Based on the available offline sources, "
+            f"the main information is supported by {markers}."
         )
 
         return AnswerWithCitations(
@@ -202,6 +203,7 @@ def render_result(result: ResearchResult) -> None:
     """Print a research result in human-readable format."""
 
     print(f"Q: {result.question}")
+    print()
     print(f"A: {result.answer}")
     print()
 
