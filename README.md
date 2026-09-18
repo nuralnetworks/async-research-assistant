@@ -36,7 +36,7 @@ docker run --env-file .env finalproj python -m researcher ask "What is photosynt
 | Variable | Needed? | Default | What it does |
 |---|---|---|---|
 | `LLM_PROVIDER` | yes | `gemini` | `anthropic`, `openai` or `gemini` |
-| `LLM_MODEL` | yes | `gemini-2.0-flash` | model name |
+| `LLM_MODEL` | yes | `gemini-3.5-flash-lite` | model name |
 | `GOOGLE_API_KEY` / `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` | one of them for live runs | - | key for the LLM you picked. Not needed with `--offline` |
 | `WEB_SEARCH_PROVIDER` | yes | `duckduckgo` | `tavily`, `serper` or `duckduckgo` |
 | `TAVILY_API_KEY` / `SERPER_API_KEY` | only if you use that search | - | DuckDuckGo needs no key |
