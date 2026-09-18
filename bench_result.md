@@ -12,8 +12,8 @@
 
 | Mode | Duration (s) | Sources fetched | Relative speed |
 |---|---:|---:|---:|
-| Sequential | 4.523 | 15 | 1.00x |
-| Parallel (`fetch_all`) | 2.643 | 15 | 1.71x |
+| Sequential | 4.530 | 15 | 1.00x |
+| Parallel (`fetch_all`) | 2.625 | 15 | 1.73x |
 
 ## Device and Runtime
 

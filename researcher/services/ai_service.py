@@ -86,13 +86,9 @@ def search_keywords(question: str) -> str:
 
 
 def _wiki_tries(question: str) -> list[str]:
-    """Wikipedia likes short queries, so shorten until one can hit."""
+    """Wikipedia ANDs query words, so shorten from the right until one hits."""
     words = search_keywords(question).split()
-    tries = [" ".join(words)]
-    if len(words) > 5:
-        tries.append(" ".join(words[:5]))
-    if len(words) > 3:
-        tries.append(" ".join(words[:3]))
+    tries = [" ".join(words[:n]) for n in (len(words), 5, 3, 2, 1) if n <= len(words)]
     seen: list[str] = []
     for query in tries:
         if query and query not in seen:
@@ -176,7 +172,12 @@ class ResilientAIService:
                 ms = (time.monotonic() - started) * 1000
                 logger.info("fetch ok source=%s n=%d ms=%.0f", name, len(out), ms)
                 logger.debug("fetch payload source=%s items=%d", name, len(out))
-                self._cache.set(name, f"{_CACHE_VERSION}:{query}", out)
+                if out:
+                    self._cache.set(name, f"{_CACHE_VERSION}:{query}", out)
+                else:
+                    # Never cache an empty hit: with a 24h TTL it would
+                    # keep serving "no results" long after the API recovers.
+                    logger.info("fetch empty source=%s, not cached", name)
                 return out
             except (ValueError, TypeError) as e:
                 # programmer error or bad input, retrying will not help

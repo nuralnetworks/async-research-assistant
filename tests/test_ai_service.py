@@ -204,6 +204,22 @@ async def test_gives_up_after_attempts(monkeypatch: Any) -> None:
 
 
 @pytest.mark.asyncio
+async def test_empty_results_are_not_cached(monkeypatch: Any) -> None:
+    svc, _ = _svc()
+    calls = 0
+
+    async def _empty(query: str, *, max_results: int = 2, client: Any = None) -> list[Source]:
+        nonlocal calls
+        calls += 1
+        return []
+
+    monkeypatch.setattr("researcher.services.ai_service._fetch_wikipedia", _empty)
+    assert await svc.fetch_one("wikipedia", "fusion") == []
+    assert await svc.fetch_one("wikipedia", "fusion") == []
+    assert calls == 2
+
+
+@pytest.mark.asyncio
 async def test_missing_key_fails_at_once(monkeypatch: Any) -> None:
     svc, _ = _svc()
     calls = 0
