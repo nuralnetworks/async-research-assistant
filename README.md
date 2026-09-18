@@ -39,7 +39,7 @@ docker run --env-file .env finalproj python -m researcher ask "What is photosynt
 | `LLM_MODEL` | yes | `gemini-2.0-flash` | model name |
 | `GOOGLE_API_KEY` / `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` | one of them for live runs | - | key for the LLM you picked. Not needed with `--offline` |
 | `WEB_SEARCH_PROVIDER` | yes | `duckduckgo` | `tavily`, `serper` or `duckduckgo` |
-| `TAVILY_API_KEY` / `SERPER_API_KEY` | only if you use that search | - | DuckDuckGo needs no key |
+| `TAVILY_API_KEY` / `SERPER_API_KEY` | only if you use that search | - | DuckDuckGo needs no key, but it sometimes throttles automated requests; a free Tavily key is the reliable option |
 | `LOG_LEVEL` | no | `INFO` | `DEBUG`, `INFO`, `WARNING`, `ERROR` |
 | `CACHE_DIR` | no | `./.cache` | where the file cache lives |
 | `CACHE_TTL_SECONDS` | no | `86400` | how long a cached (source, query) lasts |
@@ -66,8 +66,8 @@ python -m researcher ask "What is fusion energy?" --offline --json
 # all 5 sample questions in data/research_questions.json
 python -m researcher demo --limit 5 --offline
 
-# timing test
-python -m researcher bench
+# timing test (no network needed)
+python -m researcher bench --offline
 ```
 
 `python -m researcher demo --limit 5 --offline` writes one answer per question plus `artefacts/answers.json`.
@@ -78,7 +78,9 @@ Numbers come from `scripts/bench.py --offline` on the same machine with a cleare
 
 | Workload | N | Sequential | Concurrent (sem=5) | Speedup |
 |---|---|---|---|---|
-| 5 questions x 3 sources, 300ms fake IO | 15 fetches | 4.617 s | 3.647 s | 1.27x |
+| 5 questions x 3 sources, 300ms fake IO | 15 fetches | 4.522 s | 2.728 s | 1.66x |
+
+Measured on Windows, Python 3.13.3, cleared cache. Bottleneck afterwards is the per-process rate limiter plus synthesis, see below.
 
 ```bash
 python scripts/bench.py --offline
@@ -94,7 +96,7 @@ pytest tests/test_ai_smoke.py -v
 mypy researcher/
 ```
 
-We aim for 60%+ coverage on `researcher/`. The ai smoke tests have to stay green. Everything runs offline, ai and http are mocked.
+Measured coverage on `researcher/` is currently 84% (gate: 60%). The ai smoke tests have to stay green. Everything runs offline, ai and http are mocked.
 
 ## Layout
 
@@ -116,7 +118,6 @@ We aim for 60%+ coverage on `researcher/`. The ai smoke tests have to stay green
 ├── data/research_questions.json
 ├── artefacts/
 ├── docs/architecture.md
-├── report/
 ├── Dockerfile
 ├── requirements.txt
 ├── .env.example
