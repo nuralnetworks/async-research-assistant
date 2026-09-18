@@ -28,7 +28,7 @@ if _HAS_PYDANTIC_SETTINGS:
         model_config = SettingsConfigDict(env_file=_PROJECT_ENV, env_file_encoding="utf-8", extra="ignore")
 
         LLM_PROVIDER: str = "gemini"
-        LLM_MODEL: str = "gemini-2.0-flash"
+        LLM_MODEL: str = "gemini-3.5-flash-lite"
         WEB_SEARCH_PROVIDER: str = "duckduckgo"
         LOG_LEVEL: str = "INFO"
         CACHE_DIR: str = "./.cache"
@@ -47,7 +47,7 @@ else:
         def __init__(self) -> None:
             import os
             self.LLM_PROVIDER = os.getenv("LLM_PROVIDER", "gemini")
-            self.LLM_MODEL = os.getenv("LLM_MODEL", "gemini-2.0-flash")
+            self.LLM_MODEL = os.getenv("LLM_MODEL", "gemini-3.5-flash-lite")
             self.WEB_SEARCH_PROVIDER = os.getenv("WEB_SEARCH_PROVIDER", "duckduckgo")
             self.LOG_LEVEL = os.getenv("LOG_LEVEL", "INFO")
             self.CACHE_DIR = os.getenv("CACHE_DIR", "./.cache")
