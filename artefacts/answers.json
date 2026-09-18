@@ -1,34 +1,92 @@
 {
   "generated_on": "2026-09-18",
   "offline": false,
-  "count": 4,
+  "count": 5,
   "results": [
+    {
+      "id": "q1",
+      "difficulty": "easy",
+      "question": "What is photosynthesis and what are its main stages?",
+      "answer": "Photosynthesis is a system of biological processes used by photopigment-bearing autotrophic organisms, such as most plants, algae, and cyanobacteria, to convert light energy into chemical energy [1, 2]. Typically relying on sunlight, this process provides the chemical energy necessary to fuel the organisms' metabolism [2]. Oxygenic photosynthesis specifically releases oxygen as a byproduct through the splitting of water [2]. The converted chemical energy is then stored within the bonds of intracellular organic compounds, including carbohydrates like sugars, starches, phytoglycogen, and cellulose [2].",
+      "citations": [
+        {
+          "index": 1,
+          "title": "Photosynthesis (disambiguation)",
+          "url": "https://en.wikipedia.org/wiki/Photosynthesis_(disambiguation)",
+          "origin": "wikipedia"
+        },
+        {
+          "index": 2,
+          "title": "Photosynthesis",
+          "url": "https://en.wikipedia.org/wiki/Photosynthesis",
+          "origin": "wikipedia"
+        }
+      ],
+      "sources": [
+        {
+          "title": "Photosynthesis (disambiguation)",
+          "url": "https://en.wikipedia.org/wiki/Photosynthesis_(disambiguation)",
+          "snippet": "Photosynthesis is a biological process to convert light into chemical energy.",
+          "origin": "wikipedia"
+        },
+        {
+          "title": "Photosynthesis",
+          "url": "https://en.wikipedia.org/wiki/Photosynthesis",
+          "snippet": "Photosynthesis is a system of biological processes by which photopigment-bearing autotrophic organisms, such as most plants, algae and cyanobacteria, convert light energy—typically from sunlight—into the chemical energy necessary to fuel their metabolism. The term photosynthesis usually refers to oxygenic photosynthesis, a process that releases oxygen as a byproduct of water splitting. Photosynthetic organisms store the converted chemical energy within the bonds of intracellular organic compounds, typically carbohydrates like sugars, starches, phytoglycogen and cellulose. When needing to use this stored energy, an organism's cells then metabolize the organic compounds through cellular respiration. Photosynthesis plays a critical role in producing and maintaining the oxygen content of the Earth's atmosphere, and it supplies most of the biological energy necessary for complex life on Earth.",
+          "origin": "wikipedia"
+        }
+      ],
+      "failures": [],
+      "timings_ms": {
+        "wikipedia": 646.0
+      },
+      "cache_hit": false,
+      "warnings": []
+    },
     {
       "id": "q2",
       "difficulty": "medium",
       "question": "How do transformer-based language models handle long context windows?",
-      "answer": "Transformer-based language models rely on an attention operation that compares each new token to every previous token, which allows them to effectively recall information but makes them increasingly inefficient as the context grows [1]. Despite being powerful, these models face a limitation with finite context windows, where performance drops or details are forgotten once the window overflows [3]. To address these challenges, researchers have developed various methodologies targeting module designs within the Transformer architecture—particularly intricate designs around the attention module—as well as optimization toolkits to enhance efficiency and efficacy across extensive context windows [2].",
+      "answer": "Transformer-based language models use attention, a mathematical operation that compares the latest token to every previous token, allowing them to recall information by \"remembering\" every token in their context [4]. However, this means conventional models become less efficient and slower as the context grows, because longer sequences require more computation [4, 6]. To handle long-context inputs within limitations, some approaches make multiple calls to a pretrained model to leverage its in-context learning capabilities [5]. Additionally, context windows can theoretically grow as large as desired if there is enough memory available, though outputs may not make sense unless the model was trained on sequences of a similar length [6].",
       "citations": [
         {
-          "index": 1,
+          "index": 4,
           "title": "Why large language models struggle with long contexts",
           "url": "https://www.understandingai.org/p/why-large-language-models-struggle",
           "origin": "web"
         },
         {
-          "index": 2,
-          "title": "Advancing Transformer Architecture in Long-Context Large Language Models: A Comprehensive Survey",
+          "index": 5,
+          "title": "Advancing Transformer Architecture in Long-Context Large ...",
           "url": "https://arxiv.org/html/2311.12351v2",
           "origin": "web"
         },
         {
-          "index": 3,
-          "title": "2 Ways to Extend LLM Context Windows - Supermemory",
-          "url": "https://supermemory.ai/blog/extending-context-windows-in-llms",
+          "index": 6,
+          "title": "Understanding Context Windows for Transformer Models",
+          "url": "https://towardsdatascience.com/de-coded-understanding-context-windows-for-transformer-models-cd1baca6427e",
           "origin": "web"
         }
       ],
       "sources": [
+        {
+          "title": "Thus Spake Long-Context Large Language Model",
+          "url": "http://arxiv.org/abs/2502.17129v2",
+          "snippet": "Long context is an important topic in Natural Language Processing (NLP), running through the development of NLP architectures, and offers immense opportunities for Large Language Models (LLMs), giving LLMs the lifelong learning potential akin to humans. Unfortunately, the pursuit of a long context is accompanied by numerous obstacles. Nevertheless, long context remains a core competitive advantage for LLMs. In the past two years, the context length of LLMs has achieved a breakthrough extension to millions of tokens. Moreover, research on long-context LLMs has expanded beyond length extrapolation to a comprehensive focus on architecture, infrastructure, training, and evaluation technologies. Inspired by the symphonic poem, Thus Spake Zarathustra, we draw an analogy between the journey of extending the context of LLM and the attempts of humans to transcend their mortality. In this survey, we will illustrate how LLM struggles between the tremendous need for a longer context and its equal need to accept the fact that it is ultimately finite. To achieve this, we give a global picture of the lifecycle of long-context LLMs from four perspectives: architecture, infrastructure, training, and evaluation, showcasing the full spectrum of long-context technologies. At the end of this survey, we will present 10 unanswered questions currently faced by long-context LLMs. We hope this survey can serve as a systematic introduction to research on long-context LLMs. Video: https://www.bilibili.com/video/BV11h9AYoEYj. Github: https://github.com/OpenMOSS/Thus-Spake-Long-Context-LLM.",
+          "origin": "arxiv"
+        },
+        {
+          "title": "Bringing order into the realm of Transformer-based language models for artificial intelligence and law",
+          "url": "http://arxiv.org/abs/2308.05502v2",
+          "snippet": "Transformer-based language models (TLMs) have widely been recognized to be a cutting-edge technology for the successful development of deep-learning-based solutions to problems and applications that require natural language processing and understanding. Like for other textual domains, TLMs have indeed pushed the state-of-the-art of AI approaches for many tasks of interest in the legal domain. Despite the first Transformer model being proposed about six years ago, there has been a rapid progress of this technology at an unprecedented rate, whereby BERT and related models represent a major reference, also in the legal domain. This article provides the first systematic overview of TLM-based methods for AI-driven problems and tasks in the legal sphere. A major goal is to highlight research advances in this field so as to understand, on the one hand, how the Transformers have contributed to the success of AI in supporting legal processes, and on the other hand, what are the current limitations and opportunities for further research development.",
+          "origin": "arxiv"
+        },
+        {
+          "title": "Beyond In-Context Learning: Aligning Long-form Generation of Large Language Models via Task-Inherent Attribute Guidelines",
+          "url": "http://arxiv.org/abs/2506.01265v1",
+          "snippet": "In-context learning (ICL) is an important yet not fully understood ability of pre-trained large language models (LLMs). It can greatly enhance task performance using a few examples, termed demonstrations, without fine-tuning. Although effective in question answering, ICL often underperforms in long-form generation tasks such as summarization. Under appropriately realistic assumptions, we empirically and theoretically show that ICL demonstrations alone are insufficient to teach LLMs the task language and format distributions for generation. We argue for explicit exposure to the task distributions and hypothesize that defining them by prompting enhances model performance. To this end, we present LongGuide, which efficiently generates two parallel streams of guidelines capturing task language and format properties: (i) Metric Guidelines (MGs) that instruct models to optimize self-evaluated metrics; and (ii) Output Constraint Guidelines (OCGs) that constrain generation at both token and sentence levels. LongGuide automatically selects the best combination of guidelines, improving both strong open- and closed-source LLMs by over 5% in both zero- and few-shot settings. We show that LongGuide is generalizable, learnable by weak models to enhance strong ones, and integrates synergistically with automatic prompt optimizers.",
+          "origin": "arxiv"
+        },
         {
           "title": "Why large language models struggle with long contexts",
           "url": "https://www.understandingai.org/p/why-large-language-models-struggle",
@@ -36,59 +94,70 @@
           "origin": "web"
         },
         {
-          "title": "Advancing Transformer Architecture in Long-Context Large Language Models: A Comprehensive Survey",
+          "title": "Advancing Transformer Architecture in Long-Context Large ...",
           "url": "https://arxiv.org/html/2311.12351v2",
-          "snippet": "In this survey, we comprehensively navigate the landscape of architectural advancement in Transformer-based LLMs to enhance the capabilities of handling extensive context windows across various development stages with a holistic taxonomy that categorizes these methodologies targeting different module designs in Transformer. Then, we explore evaluation necessities specific to long-text tasks and some optimization toolkits that integrate many tools to augment LLMs’ efficiency and efficacy. We [...] Many methods propose intricate designs around the attention module in the Transformer architecture. In contrast, there exist simpler approaches that treat pretrained LLMs as black-box or gray-box models and handle long-context inputs by making multiple calls to the model, ensuring that each call respects the Lm​a​xL\\_{max} limitation. While these approaches don’t enhance the LLMs’ inherent ability to process long contexts, they leverage the models’ in-context learning capabilities, albeit with [...] This article offers a comprehensive survey of the recent advancement in Transformer-based LLM architectures aimed at enhancing the long-context capabilities of LLMs throughout the entire model lifecycle, from pre-training through to inference.\nWe first delineate and analyze the problems of handling long-context input and output with the current Transformer-based models. We then provide a taxonomy and the landscape of upgrades on Transformer architecture to solve these problems.",
+          "snippet": "Many methods propose intricate designs around the attention module in the Transformer architecture. In contrast, there exist simpler approaches that treat pretrained LLMs as black-box or gray-box models and handle long-context inputs by making multiple calls to the model, ensuring that each call respects the Lm​a​xL\\_{max} limitation. While these approaches don’t enhance the LLMs’ inherent ability to process long contexts, they leverage the models’ in-context learning capabilities, albeit with [...] In this survey, we comprehensively navigate the landscape of architectural advancement in Transformer-based LLMs to enhance the capabilities of handling extensive context windows across various development stages with a holistic taxonomy that categorizes these methodologies targeting different module designs in Transformer. Then, we explore evaluation necessities specific to long-text tasks and some optimization toolkits that integrate many tools to augment LLMs’ efficiency and efficacy. We [...] Transformer-based Large Language Models (LLMs) have been\napplied in diverse areas such as knowledge bases, human interfaces, and dynamic agents, and\nmarking a stride towards achieving Artificial General Intelligence (AGI).\nHowever, current LLMs are predominantly pretrained on short text snippets, which compromises their effectiveness in processing the long-context prompts that are frequently encountered in practical scenarios.",
           "origin": "web"
         },
         {
-          "title": "2 Ways to Extend LLM Context Windows - Supermemory",
-          "url": "https://supermemory.ai/blog/extending-context-windows-in-llms",
-          "snippet": "Blog·Learning\n\n# 2 Approaches For Extending Context Windows in LLMs\n\nBy Naman Bansal·9 min read\n\nTransformer-based large language models have become the poster boys of modern AI, yet they still share one stark limitation: a finite context window. Once that window overflows, performance drops like a rock or the model forgets key details.\n\nThis guide walks through two complementary strategies that lift those limits:",
+          "title": "Understanding Context Windows for Transformer Models",
+          "url": "https://towardsdatascience.com/de-coded-understanding-context-windows-for-transformer-models-cd1baca6427e",
+          "snippet": "To summarise, the context window is not fixed and can grow as large as you want it to, provided there is enough memory available! However, longer sequences mean more computation - which also result in the model being slower - and unless the model has been trained on sequences of a similar length, the output may not make much sense! However, even for models with large context windows, there is no guarantee that they will effectively use all of the information provided to them - there really is [...] The transformer architecture is a powerful tool for natural language processing, but it has some limitations when it comes to handling long sequences of text. In this article, we will explore how different factors affect the maximum context length that a transformer model can process, and whether bigger is always better when choosing a model for your task.\n\nImage generated by the Azure OpenAI Service DALL-E model with the following prompt: \"A robot reading a book. Hyper-realistic, HQ\" [...] In the 2023 paper Lost in the Middle, researchers at Stanford and Berkley investigated how models use and access information provided in their context window, and concluded the following:\n\n> \"We find that changing the position of relevant information in the input context can substantially affect model performance, indicating that current language models do not robustly access and use information in long input contexts\".",
           "origin": "web"
         }
       ],
-      "failures": [
-        {
-          "source": "arxiv",
-          "error": ""
-        }
-      ],
+      "failures": [],
       "timings_ms": {
-        "arxiv": 10002.5,
-        "web": 1772.2
+        "arxiv": 349.5,
+        "web": 1685.3
       },
       "cache_hit": false,
-      "warnings": [
-        "Only 1/2 sources succeeded; failed sources: arxiv."
-      ]
+      "warnings": []
     },
     {
       "id": "q3",
       "difficulty": "medium",
       "question": "What were the main causes of the 2008 financial crisis?",
-      "answer": "The 2008 financial crisis was primarily caused by excessive speculation on property values by homeowners and financial institutions, which created the United States housing bubble [1, 3]. This foundation was further fueled by predatory and risky subprime mortgage lending, regulatory gaps, and Wall Street practices [1, 3]. Deficiencies in regulation and supervision acted as structural vulnerabilities that propagated and amplified the initial shocks [1, 2]. Additionally, Austrian school economists attributed the crisis partly to the Federal Reserve's prolonged policy of artificially low interest rates [1].",
+      "answer": "The 2008 financial crisis was triggered by the collapse of the U.S. housing market and a banking crisis rooted in subprime mortgage lending [4, 5]. Key causes included excessive speculation on property values by both homeowners and financial institutions, which created a housing bubble [4, 6]. This was further exacerbated by predatory lending practices, loose credit, and regulatory deficiencies [4, 6]. Austrian school economists also attributed the crisis to the Federal Reserve's prolonged policy of maintaining artificially low interest rates [4]. Consequently, when mortgage-backed securities tied to these risky loans lost their value, major financial institutions failed and the credit markets froze [5].",
       "citations": [
         {
-          "index": 1,
+          "index": 4,
           "title": "2008 financial crisis",
           "url": "https://en.wikipedia.org/wiki/2008_financial_crisis",
           "origin": "web"
         },
         {
-          "index": 2,
-          "title": "Causes of the Recent Financial and Economic Crisis - Federal Reserve Board",
-          "url": "https://www.federalreserve.gov/newsevents/testimony/bernanke20100902a.htm",
+          "index": 5,
+          "title": "What Caused the Great Recession of 2008? Explained",
+          "url": "https://www.acorns.com/learn/investing/what-caused-great-recession-of-2008",
           "origin": "web"
         },
         {
-          "index": 3,
-          "title": "The 2008 Financial Crisis Explained: Housing Bubble to Bailout | Retro Report",
-          "url": "https://www.youtube.com/watch?v=7cNJXzOf__0",
+          "index": 6,
+          "title": "[PDF] Origins of the Crisis - FDIC",
+          "url": "https://www.fdic.gov/media/18636",
           "origin": "web"
         }
       ],
       "sources": [
+        {
+          "title": "The Maine (band)",
+          "url": "https://en.wikipedia.org/wiki/The_Maine_(band)",
+          "snippet": "The Maine is an American rock band from Tempe, Arizona. Formed in 2007, the group consists of lead vocalist, guitarist and pianist John O'Callaghan, lead guitarist Jared Monaco, bass guitarist Garrett Nickelsen, drummer Patrick Kirch, and rhythm guitarist Kennedy Brock.",
+          "origin": "wikipedia"
+        },
+        {
+          "title": "The Maine discography",
+          "url": "https://en.wikipedia.org/wiki/The_Maine_discography",
+          "snippet": "The Maine is an American rock band, formed in Tempe, Arizona in 2007. The band has released ten studio albums, eleven extended plays, 34 singles and 32 music videos. Their debut studio album, Can't Stop Won't Stop was released on July 8, 2008, via Fearless Records, peaking at No. 40 on the Billboard 200. Their second studio album, Black & White was released on July 13, 2010, through Warner Records, peaking No. 19 on the Billboard 200. Their third studio album, Pioneer was released on December 6, 2011, and peaked at No. 90 on the Billboard 200. Forever Halloween, their fourth studio album, was released on June 4, 2013, and peaked at No. 39 on Billboard 200. Their fifth studio album American Candy was released on March 31, 2015, and peaked at No. 37 on the Billboard 200. Their sixth studio album Lovely Little Lonely, peaked at No. 32 on the Billboard 200 and was released on April 7, 2017. You Are OK was released as the band's seventh studio album on March 29, 2019, and peaked at No. 52 on the Billboard 200. The group released their eighth studio album, XOXO: From Love and Anxiety in Real Time on July 12, 2021, and their ninth studio album, The Maine on August 1, 2023. The band's tenth studio album, Joy Next Door, was released on April 10, 2026.",
+          "origin": "wikipedia"
+        },
+        {
+          "title": "The Main Ingredient",
+          "url": "https://en.wikipedia.org/wiki/The_Main_Ingredient",
+          "snippet": "The Main Ingredient was an American soul and R&B group which had a run of hits in the 1970s, including their 1972 million-selling song \"Everybody Plays the Fool\".",
+          "origin": "wikipedia"
+        },
         {
           "title": "2008 financial crisis",
           "url": "https://en.wikipedia.org/wiki/2008_financial_crisis",
@@ -96,22 +165,22 @@
           "origin": "web"
         },
         {
-          "title": "Causes of the Recent Financial and Economic Crisis - Federal Reserve Board",
-          "url": "https://www.federalreserve.gov/newsevents/testimony/bernanke20100902a.htm",
-          "snippet": "declines, tend to result in lenders demanding still higher haircuts, which forces more asset sales, and so on. Such phenomena were particularly important in the run-up to the acquisition of Bear Stearns in March 2008 and in the most intense phase of the crisis in September and October 2008. [...] In discussing the causes of the crisis, it is essential to distinguish between triggers (the particular events or factors that touched off the crisis) and vulnerabilities (the structural weaknesses in the financial system and in regulation and supervision that propagated and amplified the initial shocks). Although a number of developments helped trigger the crisis, the most prominent one was the prospect of significant losses on residential mortgage loans to subprime borrowers that became",
+          "title": "What Caused the Great Recession of 2008? Explained",
+          "url": "https://www.acorns.com/learn/investing/what-caused-great-recession-of-2008",
+          "snippet": "The short version: The 2008 Great Recession was triggered by the collapse of the U.S. housing market and a banking crisis rooted in subprime mortgage lending. When mortgage-backed securities tied to risky loans lost their value, major financial institutions failed, credit markets froze, and the stock market crashed in September 2008, wiping out more than half its value at the bottom. Here's how it unfolded, what came next, and the lessons that can still apply today. [...] The 2008 Great Recession was triggered by the collapse of the U.S. housing market and a banking crisis rooted in subprime mortgage lending. When mortgage-backed securities tied to risky loans lost their value, major financial institutions failed and credit markets froze. [...] The specific setup that caused 2008 (runaway subprime lending plus opaque derivatives plus undercapitalized banks) is much harder to repeat today because of post-crisis reforms like the Dodd-Frank Act, the Volcker Rule, and stricter capital requirements at the biggest banks.",
           "origin": "web"
         },
         {
-          "title": "The 2008 Financial Crisis Explained: Housing Bubble to Bailout | Retro Report",
-          "url": "https://www.youtube.com/watch?v=7cNJXzOf__0",
-          "snippet": "# The 2008 Financial Crisis Explained: Housing Bubble to Bailout | Retro Report\n## RETRO REPORT\n91200 subscribers\n388 likes\n\n### Description\n35682 views\nPosted: 25 Sep 2025\nRisky loans, regulatory gaps, and Wall Street practices fueled the 2008 financial crisis and led to the Great Recession. Educational Resources: [...] the foundation for a house of cards. The financial crisis\ngrew out of a housing bubble that swept the nation\n in the early 2000s. -Real estate is a\nnational obsession. That’s when Lissie Dickerson\nand her partner bought a townhome in\nsuburban Maryland. -It was supposed to be a \ngreat time to buy a house. I was thinking that, \nyou know, I could move here and get a house,\nget some equity going. They say even though\nthey had steady jobs and a down payment, their broker",
+          "title": "[PDF] Origins of the Crisis - FDIC",
+          "url": "https://www.fdic.gov/media/18636",
+          "snippet": "The U.S. financial crisis of 2008 followed a boom and bust cycle in the housing market that originated several years earlier and exposed vulnerabilities in the financial system. As is typical of boom and bust cycles, this boom was characterized by loose credit, rampant speculation, and general exuberance in the outlook for the market—in this instance, the housing market. The subsequent downturn began as a housing crisis that initially seemed to be concentrated in certain states and in the [...] Throughout the summer of 2008, persistent declines in asset values continued to weigh on financial institution balance sheets. Eventually, several major financial institutions neared insolvency. Among them were the two giant GSEs, Fannie Mae and Freddie Mac, which together held about $1.5 trillion in bonds outstanding. Finally, on September 7, 2008, growing losses and ongoing deterioration in MBS prices prompted Treasury Secretary Henry Paulson to put these two GSEs into federal [...] their funds, refused repo funding, and demanded more collateral on outstanding commitments. On September 15, 2008, unable to meet investor demand—and without government assistance or the presence of an acquiring institution—Lehman Brothers declared bankruptcy. Lehman’s failure triggered panic throughout the U.S. and global financial systems. Coming on the heels of the previous stages of financial market turbulence, the panic resulted in one of the most severe financial crises in U.S. history.",
           "origin": "web"
         }
       ],
       "failures": [],
       "timings_ms": {
-        "wikipedia": 1115.3,
-        "web": 1586.6
+        "wikipedia": 831.7,
+        "web": 1820.1
       },
       "cache_hit": false,
       "warnings": []
@@ -120,22 +189,34 @@
       "id": "q4",
       "difficulty": "hard",
       "question": "What is the current state of fusion energy research?",
-      "answer": "The current state of nuclear fusion research involves numerous national and international collaboration projects, such as the ITER megaproject, which uses a tokamak reactor to demonstrate magnetic confinement fusion feasibility [1]. Additionally, the National Ignition Facility (NIF) is researching methods to maximize energy output for inertial confinement [1]. While putting fusion energy on the grid is still ongoing research, it has already advanced plasma physics and technology, yielding real-world benefits like improved industrial processes and materials [2]. However, some experts caution that recent publicity regarding imminent commercial fusion energy in the next 10 to 20 years may be overly optimistic, noting it could still prove too costly to compete practically [3].",
+      "answer": "Nuclear fusion research involves national and international collaboration projects, such as the ITER international megaproject, which aims to demonstrate the feasibility of magnetic confinement fusion using a tokamak reactor [4]. Additionally, the National Ignition Facility (NIF) is researching ways to maximize energy output for inertial confinement, while programs like ARPA-E's ALPHA have focused on advancing pulsed, intermediate-density fusion approaches to enable lower-cost pathways [1, 4]. Artificial intelligence also holds great potential to help advance fusion research through close collaborations between domain experts and AI developers [3]. Although research to put fusion energy on the grid is ongoing and has advanced plasma physics, some experts caution that claims of imminent commercial fusion energy in the next 10 to 20 years are overly hyped [5, 6].",
       "citations": [
         {
           "index": 1,
-          "title": "The Current State of Nuclear Fusion Research: A Review and Assessment of Leading Technologies",
+          "title": "Retrospective of the ARPA-E ALPHA fusion program",
+          "url": "http://arxiv.org/abs/1907.09921v2",
+          "origin": "arxiv"
+        },
+        {
+          "index": 3,
+          "title": "Challenges and opportunities for AI to help deliver fusion energy",
+          "url": "http://arxiv.org/abs/2603.25777v2",
+          "origin": "arxiv"
+        },
+        {
+          "index": 4,
+          "title": "The Current State of Nuclear Fusion Research",
           "url": "https://www.worldscholarsreview.org/article/the-current-state-of-nuclear-fusion-research-a-review-and-assessment-of-leading-technologies",
           "origin": "web"
         },
         {
-          "index": 2,
-          "title": "Fusion energy: Pathway to abundant power | NSF - U.S. National Science Foundation",
+          "index": 5,
+          "title": "Fusion energy: Pathway to abundant power",
           "url": "https://www.nsf.gov/science-matters/fusion-energy-pathway-abundant-power",
           "origin": "web"
         },
         {
-          "index": 3,
+          "index": 6,
           "title": "Notes on the Recent Hype about Imminence of ...",
           "url": "https://www.belfercenter.org/research-analysis/notes-recent-hype-about-imminence-commercial-fusion-energy",
           "origin": "web"
@@ -143,13 +224,31 @@
       ],
       "sources": [
         {
-          "title": "The Current State of Nuclear Fusion Research: A Review and Assessment of Leading Technologies",
+          "title": "Retrospective of the ARPA-E ALPHA fusion program",
+          "url": "http://arxiv.org/abs/1907.09921v2",
+          "snippet": "This paper provides a retrospective of the ALPHA (Accelerating Low-cost Plasma Heating and Assembly) fusion program of the Advanced Research Projects Agency-Energy (ARPA-E) of the U.S. Department of Energy. ALPHA's objective was to catalyze research and development efforts to enable substantially lower-cost pathways to economical fusion power. To do this in a targeted, focused program, ALPHA focused on advancing the science and technology of pulsed, intermediate-density fusion approaches, including magneto-inertial fusion and Z-pinch variants, that have the potential to scale to commercially viable fusion power plants. The paper includes a discussion of the origins and framing of the ALPHA program, a summary of project status and outcomes, a description of associated technology-transition activities, and thoughts on a potential follow-on ARPA-E fusion program.",
+          "origin": "arxiv"
+        },
+        {
+          "title": "The Dark Energy Survey",
+          "url": "http://arxiv.org/abs/astro-ph/0510346v1",
+          "snippet": "We describe the Dark Energy Survey (DES), a proposed optical-near infrared survey of 5000 sq. deg of the South Galactic Cap to ~24th magnitude in SDSS griz, that would use a new 3 sq. deg CCD camera to be mounted on the Blanco 4-m telescope at Cerro Telolo Inter-American Observatory (CTIO). The survey data will allow us to measure the dark energy and dark matter densities and the dark energy equation of state through four independent methods: galaxy clusters, weak gravitational lensing tomography, galaxy angular clustering, and supernova distances. These methods are doubly complementary: they constrain different combinations of cosmological model parameters and are subject to different systematic errors. By deriving the four sets of measurements from the same data set with a common analysis framework, we will obtain important cross checks of the systematic errors and thereby make a substantial and robust advance in the precision of dark energy measurements.",
+          "origin": "arxiv"
+        },
+        {
+          "title": "Challenges and opportunities for AI to help deliver fusion energy",
+          "url": "http://arxiv.org/abs/2603.25777v2",
+          "snippet": "There is great potential for the application of AI tools in fusion research, and substantial worldwide benefit if fusion power is realised. However, using AI comes with its own challenges, many of which can be mitigated if responsible and robust methodologies are built into existing approaches. To do that requires close, long-term collaborations between fusion domain experts and AI developers and awareness of the fact that not all problems in fusion research are best tackled with AI tools. In April 2025, experts from academia, industry, UKAEA and STFC discussed how AI can be used to advance R&D in fusion energy at the first edition of The Economist FusionFest event. This Perspective is an expanded and updated summary of the round table discussion, providing more context and examples.",
+          "origin": "arxiv"
+        },
+        {
+          "title": "The Current State of Nuclear Fusion Research",
           "url": "https://www.worldscholarsreview.org/article/the-current-state-of-nuclear-fusion-research-a-review-and-assessment-of-leading-technologies",
           "snippet": "The current state of nuclear fusion research has brought about many national and international collaboration projects. ITER is an international-collaboration megaproject that aims to create energy through magnetic confinement fusion in a tokamak reactor, while demonstrating its feasibility as a large-scale energy source (Geng, 2022). Its primary objective is to achieve sustained nuclear fusion reactions where the energy output from the fusion process exceeds the energy input required to sustain [...] reducing its triple product. NIF is currently researching ways to maximize energy output for ICF after recently reaching a net power output. [...] top of page\n\nWorld Scholars\n\n# The Current State of Nuclear Fusion Research: A Review and Assessment of Leading Technologies\n\nAug 12, 2024\n\n28 min read\n\nUpdated: Oct 18, 2025\n\nAuthors: Neel Gonugunta, Ikshika Pant, & Jake Weiner\n\nMentor: Dr. Kay Song (DPhil, University of Oxford). Dr. Song is currently a post-doctoral researcher in the Department of Engineering Science at the University of Oxford with research specialization in Nuclear Physics.\n\n## Abstract",
           "origin": "web"
         },
         {
-          "title": "Fusion energy: Pathway to abundant power | NSF - U.S. National Science Foundation",
+          "title": "Fusion energy: Pathway to abundant power",
           "url": "https://www.nsf.gov/science-matters/fusion-energy-pathway-abundant-power",
           "snippet": "Although research towards putting fusion energy on the grid is still ongoing, it has already advanced plasma physics and fusion technology, delivering real-world benefits, including improved materials and industrial processes.",
           "origin": "web"
@@ -161,26 +260,19 @@
           "origin": "web"
         }
       ],
-      "failures": [
-        {
-          "source": "arxiv",
-          "error": ""
-        }
-      ],
+      "failures": [],
       "timings_ms": {
-        "arxiv": 10001.3,
-        "web": 1915.3
+        "arxiv": 338.9,
+        "web": 1570.6
       },
       "cache_hit": false,
-      "warnings": [
-        "Only 1/2 sources succeeded; failed sources: arxiv."
-      ]
+      "warnings": []
     },
     {
       "id": "q5",
       "difficulty": "hard",
       "question": "How does CRISPR-Cas9 gene editing work at a molecular level?",
-      "answer": "CRISPR gene editing is a molecular biology technique used to modify the genomes of living organisms based on a simplified bacterial antiviral defense system [1]. The process involves delivering the Cas9 nuclease complexed with a synthetic guide RNA (gRNA) directly into a cell [1]. This complex targets and cuts the cell's genome at a specific, desired location [1]. Once the cut is made, it allows existing genes to be removed or new genes to be added *in vivo* [1].",
+      "answer": "CRISPR gene editing is a genetic engineering technique based on a simplified version of the bacterial CRISPR-Cas9 antiviral defense system [1]. At a molecular level, the method involves delivering the Cas9 nuclease complexed with a synthetic guide RNA (gRNA) into a cell [1]. This complex allows the cell's genome to be cut at a desired location [1]. Once the genome is cut at this specific site, existing genes can be removed or new genes can be added in vivo [1].",
       "citations": [
         {
           "index": 1,
@@ -195,22 +287,33 @@
           "url": "https://en.wikipedia.org/wiki/CRISPR_gene_editing",
           "snippet": "CRISPR gene editing is a genetic engineering technique in molecular biology by which the genomes of living organisms may be modified. It is based on a simplified version of the bacterial CRISPR-Cas9 antiviral defense system. By delivering the Cas9 nuclease complexed with a synthetic guide RNA (gRNA) into a cell, the cell's genome can be cut at a desired location, allowing existing genes to be removed or new ones added in vivo.",
           "origin": "wikipedia"
-        }
-      ],
-      "failures": [
+        },
         {
-          "source": "arxiv",
-          "error": ""
+          "title": "Observation of the rare $B^0_s\\toμ^+μ^-$ decay from the combined analysis of CMS and LHCb data",
+          "url": "http://arxiv.org/abs/1411.4413v2",
+          "snippet": "A joint measurement is presented of the branching fractions $B^0_s\\toμ^+μ^-$ and $B^0\\toμ^+μ^-$ in proton-proton collisions at the LHC by the CMS and LHCb experiments. The data samples were collected in 2011 at a centre-of-mass energy of 7 TeV, and in 2012 at 8 TeV. The combined analysis produces the first observation of the $B^0_s\\toμ^+μ^-$ decay, with a statistical significance exceeding six standard deviations, and the best measurement of its branching fraction so far. Furthermore, evidence for the $B^0\\toμ^+μ^-$ decay is obtained with a statistical significance of three standard deviations. The branching fraction measurements are statistically compatible with SM predictions and impose stringent constraints on several theories beyond the SM.",
+          "origin": "arxiv"
+        },
+        {
+          "title": "Expected Performance of the ATLAS Experiment - Detector, Trigger and Physics",
+          "url": "http://arxiv.org/abs/0901.0512v4",
+          "snippet": "A detailed study is presented of the expected performance of the ATLAS detector. The reconstruction of tracks, leptons, photons, missing energy and jets is investigated, together with the performance of b-tagging and the trigger. The physics potential for a variety of interesting physics processes, within the Standard Model and beyond, is examined. The study comprises a series of notes based on simulations of the detector and physics processes, with particular emphasis given to the data expected from the first years of operation of the LHC at CERN.",
+          "origin": "arxiv"
+        },
+        {
+          "title": "Deep Search for Joint Sources of Gravitational Waves and High-Energy Neutrinos with IceCube During the Third Observing Run of LIGO and Virgo",
+          "url": "http://arxiv.org/abs/2601.07595v3",
+          "snippet": "The discovery of joint sources of high-energy neutrinos and gravitational waves has been a primary target for the LIGO, Virgo, KAGRA, and IceCube observatories. The joint detection of high-energy neutrinos and gravitational waves would provide insight into cosmic processes, from the dynamics of compact object mergers and stellar collapses to the mechanisms driving relativistic outflows. The joint detection of multiple cosmic messengers can also elevate the significance of the common observation even when some or all of the constituent messengers are sub-threshold, i.e. not significant enough to declare their detection individually. Using data from the LIGO, Virgo, and IceCube observatories, including sub-threshold events, we searched for common sources of gravitational waves and high-energy neutrinos during the third observing run of Advanced LIGO and Advanced Virgo detectors. Our search did not identify significant joint sources. We derive constraints on the rate densities of joint sources. Our results constrain the isotropic neutrino emission from gravitational-wave sources for very high values of the total energy emitted in neutrinos (> $10^{52} - 10^{54}$ erg).",
+          "origin": "arxiv"
         }
       ],
+      "failures": [],
       "timings_ms": {
-        "wikipedia": 1221.3,
-        "arxiv": 10002.2
+        "wikipedia": 484.3,
+        "arxiv": 611.5
       },
       "cache_hit": false,
-      "warnings": [
-        "Only 1/2 sources succeeded; failed sources: arxiv."
-      ]
+      "warnings": []
     }
   ]
 }
