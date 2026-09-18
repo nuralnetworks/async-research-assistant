@@ -11,14 +11,6 @@ htmlcov
 .env
 .env.*
 researcher.db
-**/*.db
-**/*.db-*
-**/*.sqlite*
-**/*.log
-.cache
-report
-slides
-pytest-cache-files-*
 artefacts
 tests
 docs

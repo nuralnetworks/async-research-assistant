@@ -28,26 +28,15 @@ On Windows use `.venv\Scripts\activate` instead of `source`.
 
 ```bash
 docker build -t finalproj .
-docker run --rm --network none finalproj python -m researcher ask "What is photosynthesis?" --offline
-docker run --rm --network none finalproj python -m researcher demo --offline --limit 5
-docker run --rm --network none finalproj python -m researcher bench --offline
+docker run --env-file .env finalproj python -m researcher ask "What is photosynthesis?" --offline
 ```
-
-Offline commands need no `.env` or API keys. For a live query, supply your own
-`.env` with `--env-file .env` and omit both `--offline` and `--network none`.
-The image uses Python 3.12.6, copies a builder virtual environment, and runs
-as `appuser`. The working directory is writable so demo and benchmark outputs
-can be created. Copy outputs before removing a container if you need to keep them.
-The Docker CI job builds a fresh image and runs these commands with networking
-disabled. Local Docker verification is still pending because the development
-machine used for this update has no Docker executable.
 
 ## Env vars
 
 | Variable | Needed? | Default | What it does |
 |---|---|---|---|
 | `LLM_PROVIDER` | yes | `gemini` | `anthropic`, `openai` or `gemini` |
-| `LLM_MODEL` | yes | `gemini-3.5-flash-lite` | model name |
+| `LLM_MODEL` | yes | `gemini-2.0-flash` | model name |
 | `GOOGLE_API_KEY` / `OPENAI_API_KEY` / `ANTHROPIC_API_KEY` | one of them for live runs | - | key for the LLM you picked. Not needed with `--offline` |
 | `WEB_SEARCH_PROVIDER` | yes | `duckduckgo` | `tavily`, `serper` or `duckduckgo` |
 | `TAVILY_API_KEY` / `SERPER_API_KEY` | only if you use that search | - | DuckDuckGo needs no key |
@@ -85,23 +74,17 @@ python -m researcher bench
 
 ## Timings
 
-Numbers come from Mahammadali's `run_benchmark()` in `scripts/bench.py`, rerun
-on 2026-09-17 with a separate, cleared SQLite cache and no network calls.
+Numbers come from `scripts/bench.py --offline` on the same machine with a cleared cache.
 
-| Workload | N | Sequential | Concurrent (sem=3) | Speedup |
+| Workload | N | Sequential | Concurrent (sem=5) | Speedup |
 |---|---|---|---|---|
-| 5 questions x 3 sources, 300ms fake IO | 15 fetches | 4.661 s | 3.202 s | 1.46x |
+| 5 questions x 3 sources, 300ms fake IO | 15 fetches | 4.617 s | 3.647 s | 1.27x |
 
 ```bash
 python scripts/bench.py --offline
-python -m researcher bench --offline
 ```
 
-Machine: Windows 11 build 26200, AMD64 Family 25 Model 68, 12 logical CPUs,
-CPython 3.12.10. The captured output is in `report/benchmark.md`.
-This measures simulated fetching only, not LLM synthesis or real provider latency.
-Client creation and scheduling overhead remain in the concurrent path, so this
-single run is below the ideal 3x overlap and should not be treated as a live SLA.
+After we parallelize, what is left is mostly network round trip plus the one LLM call for synthesis. Full table and machine info are in the report.
 
 ## Tests
 

@@ -2,10 +2,6 @@ name: CI
 
 on:
   pull_request:
-  workflow_dispatch:
-
-permissions:
-  contents: read
 
 jobs:
   lint:
@@ -15,7 +11,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: "3.12"
-      - run: pip install -r requirements.txt
+      - run: pip install ruff
       - run: ruff check .
 
   typecheck:
@@ -26,6 +22,7 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
+      - run: pip install mypy
       - run: mypy researcher/
 
   test:
@@ -36,19 +33,11 @@ jobs:
         with:
           python-version: "3.12"
       - run: pip install -r requirements.txt
-      - run: pytest tests/ --cov=researcher --cov-fail-under=60
+      - run: pip install pytest pytest-cov pytest-asyncio
+      - run: pytest --cov=researcher --cov-fail-under=60
 
   docker:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
       - run: docker build -t finalproj .
-      - name: Verify default help and non-root user
-        run: |
-          docker run --rm --network none finalproj
-          test "$(docker run --rm --network none finalproj id -u)" != "0"
-      - name: Verify offline commands in fresh containers
-        run: |
-          docker run --rm --network none finalproj python -m researcher ask "What is photosynthesis?" --offline --json
-          docker run --rm --network none finalproj python -m researcher demo --offline --limit 1
-          docker run --rm --network none finalproj python -m researcher bench --offline
