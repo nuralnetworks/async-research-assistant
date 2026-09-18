@@ -5,16 +5,19 @@ from __future__ import annotations
 import argparse
 import asyncio
 import json
+import sqlite3
 import sys
 
+import httpx
 from dotenv import load_dotenv
 from pydantic import ValidationError
 
 from ai.providers.base import ProviderError
 from ai.schemas import AnswerWithCitations, Citation, Source
 from researcher.config import get_settings
-from researcher.core.researcher import Researcher, ResearchError
-from researcher.models import ResearchRequest
+from researcher.core.researcher import ResearchError, Researcher
+from researcher.logging_setup import setup_logging
+from researcher.models import ResearchRequest, ResearchResult
 from researcher.services.ai_service import ResilientAIService
 from researcher.services.rate_limit import TokenBucket
 from researcher.storage.cache_store import CacheStore, SqliteCacheStore
@@ -29,7 +32,7 @@ class OfflineService:
         self,
         source: str,
         query: str,
-        client=None,
+        client: httpx.AsyncClient | None = None,
     ) -> list[Source]:
         """Return canned sources without using the network."""
 
@@ -183,15 +186,20 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run demo without network access",
     )
 
-    subparsers.add_parser(
+    bench_parser = subparsers.add_parser(
         "bench",
         help="Run sequential vs parallel benchmark",
+    )
+    bench_parser.add_argument(
+        "--offline",
+        action="store_true",
+        help="Run the simulated benchmark without network (also the default)",
     )
 
     return parser
 
 
-def render_result(result) -> None:
+def render_result(result: ResearchResult) -> None:
     """Print a research result in human-readable format."""
 
     print(f"Q: {result.question}")
@@ -215,7 +223,7 @@ def render_result(result) -> None:
         print(f"Warnings: {'; '.join(result.warnings)}")
 
 
-def render_json(result) -> None:
+def render_json(result: ResearchResult) -> None:
     """Print a research result as JSON."""
 
     answer = AnswerWithCitations(
@@ -268,7 +276,7 @@ class CacheAwareService:
         self,
         source: str,
         query: str,
-        client=None,
+        client: httpx.AsyncClient | None = None,
     ) -> list[Source]:
         return await self._service.fetch_one(
             source,
@@ -288,13 +296,13 @@ class CacheAwareService:
         )
 
 
-def main() -> None:
+def _main(argv: list[str] | None = None) -> None:
     """Parse command-line arguments and run the selected command."""
     # The ai package reads plain env vars, so export .env first.
     load_dotenv()
 
     parser = build_parser()
-    args = parser.parse_args()
+    args = parser.parse_args(argv)
 
     if args.command == "ask":
         sources = tuple(
@@ -354,11 +362,11 @@ def main() -> None:
         else:
             settings = get_settings()
 
-            cache = SqliteCacheStore(settings)
-
+            cache: SqliteCacheStore | None = None
             service_cache: CacheStore
 
             if request.use_cache:
+                cache = SqliteCacheStore(settings)
                 service_cache = cache
             else:
                 service_cache = NoCacheStore()
@@ -400,11 +408,9 @@ def main() -> None:
                 else:
                     render_result(result)
 
-            except (ProviderError, ResearchError) as error:
-                print(f"error: {error}", file=sys.stderr)
-                raise SystemExit(1) from error
             finally:
-                cache.close()
+                if cache is not None:
+                    cache.close()
 
     elif args.command == "demo":
         try:
@@ -438,19 +444,12 @@ def main() -> None:
         ) as error:
             parser.error(str(error))
 
-def test_no_cache_store_never_reads_or_writes():
-    from researcher.cli import NoCacheStore
-
-    store = NoCacheStore()
-
-    assert store.get("wikipedia", "What is AI?") is None
-
-    store.set(
-        "wikipedia",
-        "What is AI?",
-        [],
-    )
-
-    store.clear()
-
-    assert store.get("wikipedia", "What is AI?") is None
+def main(argv: list[str] | None = None) -> None:
+    """Keep operational failures concise while preserving argparse exit codes."""
+    setup_logging()
+    try:
+        _main(argv)
+    except (ResearchError, ProviderError, httpx.HTTPError, OSError,
+            sqlite3.Error, ValueError) as error:
+        sys.stderr.write(f"researcher: error: {error}\n")
+        raise SystemExit(1) from None
