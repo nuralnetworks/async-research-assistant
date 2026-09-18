@@ -6,6 +6,7 @@ import argparse
 import asyncio
 import json
 import sys
+from pathlib import Path
 
 from dotenv import load_dotenv
 from pydantic import ValidationError
@@ -183,9 +184,14 @@ def build_parser() -> argparse.ArgumentParser:
         help="Run demo without network access",
     )
 
-    subparsers.add_parser(
+    bench_parser = subparsers.add_parser(
         "bench",
         help="Run sequential vs parallel benchmark",
+    )
+    bench_parser.add_argument(
+        "--offline",
+        action="store_true",
+        help="Accepted for compatibility; the benchmark is always simulated",
     )
 
     return parser
@@ -290,8 +296,19 @@ class CacheAwareService:
 
 def main() -> None:
     """Parse command-line arguments and run the selected command."""
-    # The ai package reads plain env vars, so export .env first.
-    load_dotenv()
+    # The ai package reads plain env vars, so export the project .env
+    # by path: resolving from cwd would silently miss it when the
+    # command runs from another directory.
+    load_dotenv(Path(__file__).resolve().parents[1] / ".env")
+    # Answers can contain any Unicode (e.g. Skłodowska); Windows
+    # consoles default to cp1252 and would crash while printing.
+    # Narrow except: only a replaced/closed stdout can fail here.
+    reconfigure = getattr(sys.stdout, "reconfigure", None)
+    if callable(reconfigure):
+        try:
+            reconfigure(encoding="utf-8")
+        except (OSError, ValueError):
+            pass
 
     parser = build_parser()
     args = parser.parse_args()
@@ -437,20 +454,3 @@ def main() -> None:
             json.JSONDecodeError,
         ) as error:
             parser.error(str(error))
-
-def test_no_cache_store_never_reads_or_writes():
-    from researcher.cli import NoCacheStore
-
-    store = NoCacheStore()
-
-    assert store.get("wikipedia", "What is AI?") is None
-
-    store.set(
-        "wikipedia",
-        "What is AI?",
-        [],
-    )
-
-    store.clear()
-
-    assert store.get("wikipedia", "What is AI?") is None

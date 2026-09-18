@@ -340,8 +340,9 @@ async def run_demo(limit: int, offline: bool) -> int:
 
 
 def main() -> None:
-    # The ai package reads plain env vars, so export .env first.
-    load_dotenv()
+    # The ai package reads plain env vars: load the project .env by
+    # path so this also works from another directory.
+    load_dotenv(PROJECT_ROOT / ".env")
     args = parse_args()
 
     try:
