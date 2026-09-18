@@ -1,6 +1,8 @@
 """Build Bailar's contribution PDF with reportlab (document tool dependency)."""
 
 from pathlib import Path
+import re
+import sys
 from xml.sax.saxutils import escape
 
 from reportlab.lib import colors
@@ -10,8 +12,9 @@ from reportlab.lib.pagesizes import A4
 from reportlab.platypus import SimpleDocTemplate, Paragraph, Spacer, PageBreak
 
 
-def build() -> None:
+def build(source: Path | None = None) -> None:
     root = Path(__file__).resolve().parent
+    source = source or root / "report.md"
     styles = getSampleStyleSheet()
     styles.add(ParagraphStyle(
         name="Copy", fontName="Helvetica", fontSize=10.5, leading=15,
@@ -21,7 +24,7 @@ def build() -> None:
     styles["Heading2"].textColor = colors.HexColor("#087E8B")
     styles["Heading2"].keepWithNext = True
     story = []
-    for block in root.joinpath("report.md").read_text(encoding="utf-8").split("\n\n"):
+    for block in source.read_text(encoding="utf-8").split("\n\n"):
         text = " ".join(block.splitlines()).strip()
         if not text:
             continue
@@ -32,22 +35,25 @@ def build() -> None:
             text, style = text[3:], "Heading2"
             if text == "Measured verification":
                 story.append(PageBreak())
-        story.append(Paragraph(escape(text.replace("`", "")), styles[style]))
+        escaped = escape(text.replace("`", ""))
+        escaped = re.sub(r'\[([^]]+)\]\((https://[^)]+)\)',
+                         r'<link href="\2" color="#087E8B">\1</link>', escaped)
+        story.append(Paragraph(escaped, styles[style]))
         if style == "Title":
             story.append(Spacer(1, 8))
 
     def footer(canvas, doc):
         canvas.setFont("Helvetica", 9)
         canvas.setFillColor(colors.HexColor("#64748B"))
-        canvas.drawString(48, 30, "Bailar / Contribution report / 18 September 2026")
+        canvas.drawString(48, 30, "Bailar / Project evidence / 18 September 2026")
         canvas.drawRightString(A4[0] - 48, 30, str(doc.page))
 
     SimpleDocTemplate(
-        str(root / "report.pdf"), pagesize=A4, rightMargin=48, leftMargin=48,
+        str(source.with_suffix(".pdf")), pagesize=A4, rightMargin=48, leftMargin=48,
         topMargin=42, bottomMargin=50, title="Async Research Assistant - Bailar",
         author="Bailar (AI-assisted draft)",
     ).build(story, onFirstPage=footer, onLaterPages=footer)
 
 
 if __name__ == "__main__":
-    build()
+    build(Path(sys.argv[1]) if len(sys.argv) > 1 else None)
