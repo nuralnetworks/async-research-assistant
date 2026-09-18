@@ -152,3 +152,21 @@ def test_no_cache_sets_use_cache_false(monkeypatch, capsys):
     main()
 
     assert captured_request["request"].use_cache is False
+
+def test_no_cache_store_never_reads_or_writes():
+    from researcher.cli import NoCacheStore
+
+    store = NoCacheStore()
+
+    assert store.get("wikipedia", "What is AI?") is None
+
+    store.set(
+        "wikipedia",
+        "What is AI?",
+        [],
+    )
+
+    store.clear()
+
+    assert store.get("wikipedia", "What is AI?") is None
+

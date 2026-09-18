@@ -18,10 +18,14 @@ def canonicalize_query(q: str) -> str:
     return re.sub(r"\s+", " ", q.strip().lower())
 
 
+# Absolute .env path so settings resolve identically from any cwd.
+_PROJECT_ENV = Path(__file__).resolve().parents[1] / ".env"
+
+
 if _HAS_PYDANTIC_SETTINGS:
 
     class _Env(BaseSettings):
-        model_config = SettingsConfigDict(env_file=".env", env_file_encoding="utf-8", extra="ignore")
+        model_config = SettingsConfigDict(env_file=_PROJECT_ENV, env_file_encoding="utf-8", extra="ignore")
 
         LLM_PROVIDER: str = "gemini"
         LLM_MODEL: str = "gemini-2.0-flash"
