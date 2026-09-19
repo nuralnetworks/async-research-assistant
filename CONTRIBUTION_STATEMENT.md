@@ -70,7 +70,7 @@ Note on Emil's history: his commits are split across two emails (`...906@gmail.c
 
 ---
 
-## Bailar Bayramov (`@bailar`)
+## Bailar Bayramov (`@bailar-dev`)
 
 **Owned (sole author):**
 - `researcher/cli.py`, `researcher/__main__.py` (all three commands, validation, rendering)
